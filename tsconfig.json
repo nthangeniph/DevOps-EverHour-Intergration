@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+
+                              
+    "module": "commonjs",                               
+                               
+     "checkJs": true,                                  
+                                                     
+    "forceConsistentCasingInFileNames": true,            
+
+    "strict": true,
+    "esModuleInterop": true,
+    "target": "ES2020",
+    "moduleResolution": "node"
+  }  ,
+  "exclude": [
+    "typings/browser.d.ts",
+    "typings/browser",
+    "node_modules"
+  ]                               
+ 
+}

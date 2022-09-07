@@ -1,0 +1,30 @@
+{
+  "name": "devops-everhour-intergration",
+  "version": "1.0.0",
+  "description": "This will help with logging of hours to everHour",
+  "main": "index.ts",
+  "scripts": {
+    "start": "nodemon src/index.ts",
+    "dev": "nodemon --exec ts-node src/index.ts",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nthangeniph/DevOps-EverHour-Intergration.git"
+  },
+  "author": "Nthangeni Phumudzo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nthangeniph/DevOps-EverHour-Intergration/issues"
+  },
+  "homepage": "https://github.com/nthangeniph/DevOps-EverHour-Intergration#readme",
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "typescript": "^4.8.2"
+  },
+  "dependencies": {
+    "express": "^4.18.1",
+    "mongoose": "^6.5.4",
+    "nodemon": "^2.0.19"
+  }
+}
