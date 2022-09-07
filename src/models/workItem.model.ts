@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const workItemSchema = new Schema({
@@ -8,9 +8,9 @@ const workItemSchema = new Schema({
   WorkItemNumber: { type: String, required: true },
   date: { type: Date, required: true },
   type:{type:String,required:true},
-  account:{
+  user:{
     type:Schema.Types.ObjectId,
-    ref:'Account',
+    ref:'User',
     required:true
   }
   

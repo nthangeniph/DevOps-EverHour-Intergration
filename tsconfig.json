@@ -9,6 +9,7 @@
     "forceConsistentCasingInFileNames": true,            
 
     "strict": true,
+    "noImplicitAny": false,
     "esModuleInterop": true,
     "target": "ES2020",
     "moduleResolution": "node"

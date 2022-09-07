@@ -1,16 +1,16 @@
 
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+
 const Schema = mongoose.Schema;
 
 const settingSchema = new Schema({
-  projects: { type: String, required: true },
+  projects:[ { type: String, required: true }],
   displayname: { type: String, required: true },
   consent: { type: Number, required: true },
   companyname: { type: String, required: true },
-  account:{
-    type:Schema.Types.ObjectId,
-    ref:'Account',
-    required:true
+  user:   {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
   }
 }, {
   timestamps: true,
