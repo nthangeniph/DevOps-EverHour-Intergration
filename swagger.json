@@ -1,0 +1,41 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+      "version": "1.0.0", 
+      "title": "My User Project CRUD",
+      "description": "My User Project Application API",
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    },
+    "components": {
+      "securitySchemes": {
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      }
+    },
+    "security":{
+       "bearerAuth": []
+    },
+    "host": "localhost:8000",
+    "basePath": "/",
+    "tags": [
+      {
+        "name": "Authentications",
+        "description": "API for users in the system"
+      },
+      {
+        "name": "Accounts",
+        "description": "API for accounts in the system"
+      }
+    ],
+
+
+    "schemes": ["https"],
+    "consumes": ["application/json"],
+    "produces": ["application/json"]
+  }
