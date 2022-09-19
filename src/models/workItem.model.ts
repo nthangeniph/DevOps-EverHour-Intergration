@@ -19,5 +19,5 @@ const workItemSchema = new Schema({
   timestamps: true,
 });
 
- const WorkItem = mongoose.model('Setting', workItemSchema);
+ const WorkItem = mongoose.model('WorkItem', workItemSchema);
  export default WorkItem;

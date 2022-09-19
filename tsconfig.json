@@ -12,7 +12,8 @@
     "noImplicitAny": false,
     "esModuleInterop": true,
     "target": "ES2020",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "resolveJsonModule": true
   }  ,
   "exclude": [
     "typings/browser.d.ts",

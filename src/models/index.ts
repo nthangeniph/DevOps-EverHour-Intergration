@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import user from './user.model';
 import role from './role.model';
+import account from './account.model';
 import setting from './setting.model';
 import workItem from './workItem.model';
 mongoose.Promise = global.Promise;
@@ -9,6 +10,7 @@ const db = {} as any ;
 db.mongoose = mongoose;
 db.user=user;
 db.role=role;
+db.account=account;
 db.setting=setting;
 db.workItem=workItem;
 

@@ -3,12 +3,16 @@ import userRoute from './routes/user.routes';
 import authRoute from './routes/auth.routes';
 import express from "express";
 import {devopsHeaders} from './utils/index';
+import swaggerDocument from '../swagger.json';
+import combinedJson from '../src/apis';
+import swaggerUi from 'swagger-ui-express';
+import bodyParser from 'body-parser';
+
 import cors from 'cors';
 const app = express();
 
 var dburl = 'mongodb+srv://Nthangeniph:1234Univen@cluster0.hg4c5zm.mongodb.net/?retryWrites=true&w=majority';
-
-var whitelist = ['http://example1.com', 'http://example2.com']
+var whitelist = ['http://localhost:8080','https://localhost:8080', 'http://example2.com']
 var corsOptions = {
     origin: function (origin, callback) {
         if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -21,15 +25,18 @@ var corsOptions = {
 
 //this will enable cors for all whitelisted sites
 app.use(cors(corsOptions));
+app.use(cors())
 // parse requests of content-type - application/json
 app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
-
+app.use(bodyParser.urlencoded({
+    extended: true
+  }));
 db.mongoose
     .connect(dburl, {
         useNewUrlParser: true,
-        useUnifiedTopology: true
+        useUnifiedTopology: true,
     })
     .then(() => {
         console.log("Successfully connect to MongoDB.");
@@ -47,6 +54,12 @@ userRoute(app);
 authRoute(app);
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
+
+app.use(
+    '/api-docs',
+    swaggerUi.serve, 
+    swaggerUi.setup({...swaggerDocument,...combinedJson})
+  );
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
 });

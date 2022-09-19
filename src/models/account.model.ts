@@ -1,14 +1,15 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const accountSchema = new Schema({
-  username: { type: String, required: true },
   pat: { type: String, required: true },
   devOpkey: { type: String, required: true },
   everhourkey: { type: String, required: true },
   user:   {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
+    ref: "User",
+    required:true
+    
   }
   
   
