@@ -2,7 +2,7 @@
     "User": {
       "required": ["username", "password"],
       "properties": {
-        "_id": {
+        "id": {
           "type": "string",
           "uniqueItems": true
         },
@@ -133,6 +133,45 @@
             }
           }
         }
-      }
+      },
+      "/api/auth/update/{id}" :{
+        "parameters":[
+          {
+           "name": "id",
+           "in": "path",
+           "required":" true",
+           "description": "Update exist account  by id",
+           "type":"string"
+          }
+
+      ],
+        "put": {
+            "tags": ["Authentications"],
+            "requestBody": {
+              "description": "Update exist account in system",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/definitions/UserDto"
+                  }
+                    
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "description": "Account has been updated",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/definitions/UserDto"
+                    }
+                      
+                  }
+                }
+              }
+            }
+          }
+    }
     }
 }

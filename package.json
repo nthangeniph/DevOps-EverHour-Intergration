@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@types/jsonwebtoken": "^8.5.9",
+    "@types/lodash": "^4.14.185",
     "@types/swagger-jsdoc": "^6.0.1",
     "@types/swagger-ui-express": "^4.1.3",
     "bcryptjs": "^2.4.3",
@@ -32,6 +33,7 @@
     "cors": "^2.8.5",
     "express": "^4.18.1",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
     "mongoose": "^6.5.4",
     "nodemon": "^2.0.19",
     "swagger-jsdoc": "^6.2.5",

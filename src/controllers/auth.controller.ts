@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { serverError } from './helpers';
 
+
 const User = db.user;
 const Role = db.role;
 const signup = (req, res) => {
@@ -24,14 +25,14 @@ const signup = (req, res) => {
           user.roles = roles.map(role => role._id);
           user.save(err => {
             if (err) serverError(err, res);
-            res.send({ 
+            res.send({
               user: {
                 id: user._id,
                 username: user.username,
                 email: user.email,
                 roles: roles.map(role => role.name)
-            }
-          });
+              }
+            });
           });
         }
       );
@@ -41,18 +42,19 @@ const signup = (req, res) => {
         user.roles = [role._id];
         user.save(err => {
           if (err) serverError(err, res);
-          res.send({ user: {
-            username: user.username,
-            email: user.email,
-            roles: [role.name]
-          }});
+          res.send({
+            user: {
+              username: user.username,
+              email: user.email,
+              roles: [role.name]
+            }
+          });
         });
       });
     }
   });
 };
 const signin = (req, res) => {
-  console.log(req)
   User.findOne({
     username: req.body.username
   })
@@ -95,6 +97,65 @@ const signin = (req, res) => {
         accessToken: token
       });
     });
-};
 
-export { signin, signup };
+};
+const updateUser = async (req, res) => {
+
+
+  var query = { '_id': req.params.id };
+  if(!req.body.roles)req.body.roles=[];
+
+  try {
+  if (!!req.body.roles) {
+    Role.find(
+      {
+        name: { $in: req.body.roles }
+      },
+     async (err, roles) => {
+        if (err) serverError(err, res);
+        req.body.roles = roles.map(role =>{
+        return role._id.toString();
+       } );
+      
+     
+
+        const updated = await User.findOneAndUpdate(
+          query,
+          { $set: { ...req.body} },
+          {new:true}
+          )
+          .exec();
+        if (updated._id) {
+          User.findOne({
+            _id: updated._id
+          })
+            .populate("roles")
+            .exec((err, user) => {
+              if (err) serverError(err, res);
+              if (user) {
+                res.status(200).send({
+                  user: {
+                    id: user._id,
+                    username: user.username,
+                    email: user.email,
+                    roles: user.roles.map(role => role.name)
+                  }
+                });
+                return;
+              }
+    
+            })
+    
+    
+        }
+    
+      }
+      )}
+
+  } catch (error: any) {
+        if (error) serverError(error, res);
+      }
+ 
+}
+
+export { signin, signup, updateUser };

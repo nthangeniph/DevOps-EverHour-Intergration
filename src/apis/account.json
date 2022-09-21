@@ -1,3 +1,212 @@
 {
+    "definitions": {
+        "Account": {
+          "required": ["pat", "devOpkey","everhourkey","user"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "uniqueItems": true
+            },
+            "pat": {
+              "type": "string"
+            },
+            "devOpkey": {
+                "type": "string"
+              },
+              "everhourkey": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              }
+        }
+    },
+    "AccountEdit": {
+      "properties": {
+        "pat": {
+          "type": "string"
+        },
+        "devOpkey": {
+            "type": "string"
+          },
+          "everhourkey": {
+            "type": "string"
+          }
+    }
+},
+    "Accounts": {
+        "type": "array",
+        "items":{
+        "allOf": [
+            { "$ref": "#/definitions/Account" },
+            {"properties":{
+              "accountHolder": {
+              "type": "string"
+             }
+            }
+          }
+          ]
+        }
+        
+       
+      }
+},
+
+"paths": {
+    "/api/acc/create": {
+      "post": {
+        "tags": ["Accounts"],
+        "requestBody": {
+          "description": "Create new account in system",
+          "required": " true",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/Account"
+              }
+                
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "New account has been created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Account"
+                }
+                  
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/acc/update/{id}" :{
+        "parameters":[
+            {
+             "name": "id",
+             "in": "path",
+             "required":" true",
+             "description": "Update exist account  by userId",
+             "type":"string"
+            }
+  
+        ],
+        "patch": {
+            "tags": ["Accounts"],
+            "requestBody": {
+              "description": "Create new account in system",
+              "required": " true",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/definitions/AccountEdit"
+                  }
+                    
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "description": "New account has been created",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/definitions/Account"
+                    }
+                      
+                  }
+                }
+              }
+            }
+          }
+    },
+    "/api/acc/getAll": {
+        "get": {
+          "tags": ["Accounts"],
+          "requestBody": {
+            "description": "Create new account in system"
+  
+          },
+          "responses": {
+            "200": {
+              "description": "List of all registered accounts",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/definitions/Accounts"
+                  }
+                    
+                }
+              }
+            }
+          }
+          }
+  
+        },
+        "/api/acc/getAccountById/{userId}": {
+            "parameters":[
+                {
+                 "name": "userId",
+                 "in": "path",
+                 "required":" true",
+                 "description": "Find an account by userId",
+                 "type":"string"
+                }
+
+            ],
+            "get": {
+              "tags": ["Accounts"],
     
+              "responses": {
+                "200": {
+                  "description": "Registered account",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/definitions/Account"
+                      }
+                        
+                    }
+                  }
+                }
+              }
+              }
+      
+            },
+            "/api/acc/deleteAccountById/{userId}": {
+                "parameters":[
+                    {
+                     "name": "userId",
+                     "in": "path",
+                     "required":" true",
+                     "description": "Delete an account by userId",
+                     "type":"string"
+                    }
+    
+                ],
+                "delete": {
+                  "tags": ["Accounts"],
+        
+                  "responses": {
+                    "200": {
+                      "description": "Delete by id account",
+                      "content": {
+                        "application/json": {
+                          "schema": {
+                            "$ref": "#/definitions/Account"
+                          }
+                            
+                        }
+                      }
+                    }
+                  }
+                  }
+          
+                }
+      
+
+}
 }

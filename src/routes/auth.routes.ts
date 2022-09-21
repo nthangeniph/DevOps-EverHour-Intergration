@@ -1,5 +1,5 @@
 import verifySignUp from '../middleware/verifySignUp';
-import { signin,signup} from '../controllers/auth.controller'
+import { signin,signup, updateUser} from '../controllers/auth.controller'
 
 const authRoute = function(app) {
   app.use(function(req, res, next) {
@@ -18,6 +18,7 @@ const authRoute = function(app) {
     signup
   );
   app.post("/api/auth/signin", signin);
+  app.put("/api/auth/update/:id",updateUser)
 };
 
 export default authRoute;

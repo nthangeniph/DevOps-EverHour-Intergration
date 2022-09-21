@@ -9,6 +9,7 @@ import swaggerUi from 'swagger-ui-express';
 import bodyParser from 'body-parser';
 
 import cors from 'cors';
+import { accRoute } from './routes/acc.routes';
 const app = express();
 
 var dburl = 'mongodb+srv://Nthangeniph:1234Univen@cluster0.hg4c5zm.mongodb.net/?retryWrites=true&w=majority';
@@ -52,6 +53,7 @@ db.mongoose
 //connect the routes to the server
 userRoute(app);
 authRoute(app);
+accRoute(app)
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 
