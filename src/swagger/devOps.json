@@ -1,0 +1,93 @@
+{
+    "definitions": {
+        "DevOpsInPut": {
+          "required": ["pat","username"],
+          "properties": {
+            "pat": {
+              "type": "string",
+              "uniqueItems": true
+            },
+            "username":{
+                "type": "string"
+            }
+
+        }
+      } ,
+        "WorkItem": {
+            "properties": {
+
+                "id":{
+                    "type": "string"
+                },
+                "title":{
+                    "type": "string"
+                },
+                "state":{
+                    "type": "string"
+                },
+                "workItemType":{
+                    "type": "string"
+                },
+                "teamProject":{
+                    "type": "string"
+                },
+                "tags":{
+                    "type": "string"
+                },
+                "changedDate":{
+                  "type": "string"
+              },
+              "assignedTo":{
+                "type": "string"
+            }
+            }
+        },
+        "WorkItems": {
+            "type": "array",
+            "items":{
+            "allOf": [
+                { "$ref": "#/definitions/WorkItem" }
+            ]
+        }
+    
+        }
+    },
+
+ "paths":{
+    "/api/devOps/getAllWorkItems": {
+        "post": {
+            "tags" : ["DevOps"],
+            "requestBody": {
+                "description": "pull all resolved items from current user",
+                "required": " true",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/definitions/DevOpsInPut"
+                    },
+                    "example": {
+                      "pat": "zl3rt34z6eymdtzfz5sz7untamobwpg3fmdyl6uw5detdbmcxmaq",
+                      "username": "Phumudzo"
+                    }
+                      
+                  }
+                }
+            },
+            "responses": {
+                "200": {
+                  "description": "All Resolved items",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                         "$ref": "#/definitions/WorkItems"
+                        }
+                        
+                    }
+                  }
+                }
+              }
+
+        }
+    }
+ }
+}
