@@ -4,14 +4,17 @@ import authRoute from './routes/auth.routes';
 import express from "express";
 import {devopsHeaders} from './utils/index';
 import swaggerDocument from '../swagger.json';
-import combinedJson from '../src/apis';
+import combinedJson from './swagger';
 import swaggerUi from 'swagger-ui-express';
 import bodyParser from 'body-parser';
 
+
+
 import cors from 'cors';
 import { accRoute } from './routes/acc.routes';
+import { devOpsRoute } from './routes/devOps.routes';
 const app = express();
-
+const fetch=require('node-fetch')
 var dburl = 'mongodb+srv://Nthangeniph:1234Univen@cluster0.hg4c5zm.mongodb.net/?retryWrites=true&w=majority';
 var whitelist = ['http://localhost:8080','https://localhost:8080', 'http://example2.com']
 var corsOptions = {
@@ -41,7 +44,6 @@ db.mongoose
     })
     .then(() => {
         console.log("Successfully connect to MongoDB.");
-        devopsHeaders({username:'nthangeni',pat:'7567rfchgjcchgc'})
         initial();
     })
     .catch(err => {
@@ -54,6 +56,7 @@ db.mongoose
 userRoute(app);
 authRoute(app);
 accRoute(app)
+devOpsRoute(app);
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
 
@@ -64,6 +67,7 @@ app.use(
   );
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`);
+    //getProjectData('zl3rt34z6eymdtzfz5sz7untamobwpg3fmdyl6uw5detdbmcxmaq','Phumudzo')
 });
 
 
@@ -99,3 +103,5 @@ function initial() {
         }
     });
 }
+
+

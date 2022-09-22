@@ -9,8 +9,9 @@ function devopsHeaders({ username, pat }: IDevopsUser) {
     ).toString("base64")}`;
 
     return {
+        
         Authorization,
-        "Content-Type": "application/json-patch+json",
+        'Content-Type': 'application/json',
     };
 }
 function everHoursHeaders(xApiKey: string) {
