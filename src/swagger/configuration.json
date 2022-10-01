@@ -1,0 +1,173 @@
+{
+    "definitions": {
+        "Config": {
+            "required": [
+                "companyname",
+                "userId",
+                "displayname"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "uniqueItems": true
+                },
+                "projects": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "displayname": {
+                    "type": "string"
+                },
+                "companyname": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                },
+                "states": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "dateFrom": {
+                    "type": "string"
+                },
+                "dateTo": {
+                    "type": "string"
+                }
+            }
+        },
+        "message": {
+            "properties": {
+                 "message": {
+                    "type": "string"
+                 }
+              
+            }
+        }
+    },
+    "paths": {
+        "/api/config/create": {
+            "post": {
+                "tags": [
+                    "Configurations"
+                ],
+                "requestBody": {
+                    "description": "Create new configuration in system",
+                    "required": " true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/Config"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "New config has been created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/Config"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/config/getConfigById/{userId}": {
+            "parameters": [
+                {
+                    "name": "userId",
+                    "in": "path",
+                    "required": " true",
+                    "description": "Find an conigurations by userId",
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "tags": [
+                    "Configurations"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Account's configurations",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/Config"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/config/deleteConfigById/{userId}": {
+            "parameters": [
+                {
+                    "name": "userId",
+                    "in": "path",
+                    "required": " true",
+                    "description": "Delete an account's conigurations by userId",
+                    "type": "string"
+                }
+            ],
+            "delete": {
+                "tags": [
+                    "Configurations"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Account's configurations",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref":"#/definitions/message"
+                                    }
+                                
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/api/config/update" :{
+        
+            "patch": {
+                "tags": ["Configurations"],
+                "requestBody": {
+                  "description": "Update account configurations",
+                  "required": " true",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/definitions/Config"
+                      }
+                        
+                    }
+                  }
+                },
+                "responses": {
+                  "200": {
+                    "description": "Account's configurations has been updated",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "$ref": "#/definitions/Config"
+                        }
+                          
+                      }
+                    }
+                  }
+                }
+              }
+        }
+    }
+}
