@@ -13,12 +13,17 @@
     "esModuleInterop": true,
     "target": "ES2020",
     "moduleResolution": "node",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "strictNullChecks": false
   }  ,
   "exclude": [
     "typings/browser.d.ts",
     "typings/browser",
-    "node_modules"
-  ]                               
+    "node_modules",
+    
+  ] , 
+  "include": [
+    "src/**/*",
+  ]                           
  
 }

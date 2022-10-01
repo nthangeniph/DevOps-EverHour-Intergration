@@ -7,20 +7,35 @@
       "license": {
         "name": "MIT",
         "url": "https://opensource.org/licenses/MIT"
+      },
+      "contact":{
+        "name": "Nthangeni Phumudzo",
+         "email": "Nthangeniph@gmail.com"
       }
     },
     "components": {
       "securitySchemes": {
-        "bearerAuth": {
-          "type": "http",
-          "scheme": "bearer",
-          "bearerFormat": "JWT"
+        "Authorization": {
+          "type": "apiKey",
+          "name": "authorization",
+           "in": "header",
+           "description": "Authentication token"
+        
         }
       }
     },
     "security":{
-      "bearerAuth": []
+      "jwt": []
     },
+    "securityDefinitions": {
+      "Authorization": {
+      "type": "apiKey",
+      "name": "authorization",
+      "in": "header",
+      "description": "Authentication token"
+    }
+  },
+    "swagger": "3.0",
     "host": "localhost:8000",
     "basePath": "/",
     "tags": [
@@ -35,6 +50,10 @@
       {
         "name": "DevOps",
         "description": "API for devOps items"
+      },
+      {
+        "name": "Configurations",
+        "description": "Apis used to assist with filtering"
       }
     ],
 

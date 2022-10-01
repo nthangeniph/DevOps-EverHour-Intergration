@@ -2,71 +2,94 @@ import db from './models/index';
 import userRoute from './routes/user.routes';
 import authRoute from './routes/auth.routes';
 import express from "express";
-import {devopsHeaders} from './utils/index';
 import swaggerDocument from '../swagger.json';
 import combinedJson from './swagger';
 import swaggerUi from 'swagger-ui-express';
 import bodyParser from 'body-parser';
-
-
-
-import cors from 'cors';
+import mongoose from 'mongoose';
 import { accRoute } from './routes/acc.routes';
 import { devOpsRoute } from './routes/devOps.routes';
-const app = express();
-const fetch=require('node-fetch')
-var dburl = 'mongodb+srv://Nthangeniph:1234Univen@cluster0.hg4c5zm.mongodb.net/?retryWrites=true&w=majority';
-var whitelist = ['http://localhost:8080','https://localhost:8080', 'http://example2.com']
-var corsOptions = {
-    origin: function (origin, callback) {
-        if (whitelist.indexOf(origin) !== -1 || !origin) {
-            callback(null, true)
-        } else {
-            callback(new Error('Not allowed by CORS'))
-        }
-    }
-}
+import { configRoute } from './routes/config.routes';
+import { everHoursHeaders } from './utils';
+import { config } from './config/config';
+import Logging from './library/Logging';
+const router = express();
 
-//this will enable cors for all whitelisted sites
-app.use(cors(corsOptions));
-app.use(cors())
-// parse requests of content-type - application/json
-app.use(express.json());
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
-app.use(bodyParser.urlencoded({
-    extended: true
-  }));
-db.mongoose
-    .connect(dburl, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
+
+mongoose
+    .connect(config.mongo.url, {
+        retryWrites: true,
+        w: "majority"
     })
     .then(() => {
-        console.log("Successfully connect to MongoDB.");
+        Logging.info("Successfully connect to MongoDB.");
         initial();
+        StartServer();
+
     })
     .catch(err => {
-        console.error("Connection error", err);
+        Logging.error("Connection error");
+        Logging.error(err);
         process.exit();
     });
 
 
-//connect the routes to the server
-userRoute(app);
-authRoute(app);
-accRoute(app)
-devOpsRoute(app);
-// set port, listen for requests
-const PORT = process.env.PORT || 8080;
+/** Only start the server if Mongo Connects */
+const StartServer = () => {
+    //OpenApi 
+    router.use(
+        '/api-docs',
+        swaggerUi.serve,
+        swaggerUi.setup({ ...swaggerDocument, ...combinedJson }, { swaggerOptions: { persistAuthorization: true } })
+    );
+    router.use((req, res, next) => {
+        /** Log the Request */
+        Logging.info(`Incoming -> Method: [${req.method}] -Url :[${req.url}] -IP: [${req.
+            socket.remoteAddress}] -Status: [${res.statusCode}]`);
 
-app.use(
-    '/api-docs',
-    swaggerUi.serve, 
-    swaggerUi.setup({...swaggerDocument,...combinedJson})
-  );
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}.`);
+        next();
+    })
+
+    router.use(express.json());
+    router.use(express.urlencoded({ extended: true }));
+    router.use(bodyParser.urlencoded({
+        extended: true
+    }));
+
+    /** Rules of our API */
+    router.use((req, res, next) => {
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Header', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+        if (req.method == 'OPTIONS') {
+            res.header('Access-Control-Allow-Methods', 'PUT ,POST, PATCH, DELETE, GET');
+            return res.status(200).json({})
+        }
+        next();
+    });
+
+    /** Routes  */
+    userRoute(router);
+    authRoute(router);
+    accRoute(router)
+    devOpsRoute(router);
+    configRoute(router);
+
+    /** Health Checks */
+    router.get('/ping', (req, res, next) => res.status(200).json
+        ({ message: 'pong' }));
+
+    /** Error handling */
+    router.use((req, res, next) => {
+        const error = new Error('not found');
+        Logging.error(error);
+        return res.status(404).json({ message: error.message })
+    })
+
+}
+
+
+router.listen(config.server.port, () => {
+    Logging.info(`Server is running on port ${config.server.port}.`);
     //getProjectData('zl3rt34z6eymdtzfz5sz7untamobwpg3fmdyl6uw5detdbmcxmaq','Phumudzo')
 });
 
@@ -104,4 +127,35 @@ function initial() {
     });
 }
 
+var request = require('request');
 
+
+var options = {
+    'method': 'GET',
+    'url': `https://api.everhour.com/projects`,
+    'headers': everHoursHeaders('0146-63cc-5847c7-079bc3-636a5cdf'),
+
+
+};
+request(options, function (error, response, body) {
+    JSON.parse(body).filter(project => {
+        return !!project.users.find(user => {
+            if (user == 861229) {
+                //  console.log("response  ::",project)
+            }
+            return user == 861229
+        })
+
+    }).splice(0, 10);
+});
+
+var optionsMe = {
+    'method': 'GET',
+    'url': `https://api.everhour.com/users/me`,
+    'headers': everHoursHeaders('0146-63cc-5847c7-079bc3-636a5cdf'),
+
+
+};
+request(optionsMe, function (error, response, body) {
+    console.log('Response-Me:', JSON.parse(body).id);
+});

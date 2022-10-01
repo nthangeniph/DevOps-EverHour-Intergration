@@ -1,68 +1,41 @@
 import config from '../config/auth.config';
-import db from '../models/index';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { serverError } from './helpers';
+import { Request, Response, NextFunction } from 'express';
+import User from '../models/user.model';
+import Role, { IRole, IRoleOut } from '../models/role.model';
 
 
-const User = db.user;
-const Role = db.role;
-const signup = (req, res) => {
-  const user = new User({
-    username: req.body.username,
-    email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 8)
-  });
-  user.save((err, user) => {
-    if (err) serverError(err, res);
-    if (req.body.roles) {
-      Role.find(
-        {
-          name: { $in: req.body.roles }
-        },
-        (err, roles) => {
-          if (err) serverError(err, res);
-          user.roles = roles.map(role => role._id);
-          user.save(err => {
-            if (err) serverError(err, res);
-            res.send({
-              user: {
-                id: user._id,
-                username: user.username,
-                email: user.email,
-                roles: roles.map(role => role.name)
-              }
-            });
-          });
-        }
-      );
-    } else {
-      Role.findOne({ name: "user" }, (err, role) => {
-        if (err) serverError(err, res);
-        user.roles = [role._id];
-        user.save(err => {
-          if (err) serverError(err, res);
-          res.send({
-            user: {
-              username: user.username,
-              email: user.email,
-              roles: [role.name]
-            }
-          });
-        });
-      });
-    }
-  });
+const signup = async (req: Request, res: Response, next: NextFunction) => {
+
+  const { username, email, password } = req.body;
+
+  const roles = await getRoles(req.body.roles, res);
+
+
+  const user = new User({ username, email, password: bcrypt.hashSync(password, 8), roles: roles.map(rol => rol._id) });
+
+  return user.save()
+    .then(user => res.status(201).json({
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        roles: roles.map(role => role.name)
+      }
+    }))
+    .catch((error) => res.status(500).json({ error }))
+
 };
-const signin = (req, res) => {
+const signin = (req: Request, res: Response, next: NextFunction) => {
   User.findOne({
     username: req.body.username
   })
     .populate("roles", "-__v")
-    .exec((err, user) => {
-      if (err) serverError(err, res);
+    .exec()
+    .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: "User Not found." });
+        return res.status(404).json({ message: "User Not found." });
       }
       var passwordIsValid = bcrypt.compareSync(
         req.body.password,
@@ -75,7 +48,7 @@ const signin = (req, res) => {
         });
       }
       var authorities = [];
-      for (let i = 0; i < user.roles.length; i++) {
+      for (let i = 0; i < (user.roles as IRole[]).length; i++) {
         //@ts-ignore  please make good use of typescript here
         authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
       }
@@ -89,7 +62,7 @@ const signin = (req, res) => {
         expiresIn: 7200  // 2 hours
       });
 
-      res.status(200).send({
+      res.status(200).json({
         id: user._id,
         username: user.username,
         email: user.email,
@@ -99,63 +72,54 @@ const signin = (req, res) => {
     });
 
 };
-const updateUser = async (req, res) => {
-
+const updateUser = async (req: Request, res: Response, next: NextFunction) => {
 
   var query = { '_id': req.params.id };
-  if(!req.body.roles)req.body.roles=[];
-
-  try {
   if (!!req.body.roles) {
-    Role.find(
-      {
-        name: { $in: req.body.roles }
-      },
-     async (err, roles) => {
-        if (err) serverError(err, res);
-        req.body.roles = roles.map(role =>{
-        return role._id.toString();
-       } );
-      
-     
+    req.body.roles = (await getRoles(req.body.roles, res)).map(rl => rl._id)
+  }
 
-        const updated = await User.findOneAndUpdate(
-          query,
-          { $set: { ...req.body} },
-          {new:true}
-          )
-          .exec();
-        if (updated._id) {
-          User.findOne({
-            _id: updated._id
-          })
-            .populate("roles")
-            .exec((err, user) => {
-              if (err) serverError(err, res);
-              if (user) {
-                res.status(200).send({
-                  user: {
-                    id: user._id,
-                    username: user.username,
-                    email: user.email,
-                    roles: user.roles.map(role => role.name)
-                  }
-                });
-                return;
-              }
-    
-            })
-    
-    
+  User.findOneAndUpdate(
+    query,
+    { $set: { ...req.body } },
+    { new: true }
+  )
+    .populate("roles")
+    .exec()
+    .then(user => user ?
+      res.status(201).json({
+        user: {
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          roles: (user.roles as IRole[]).map(role => role.name)
         }
-    
-      }
-      )}
+      }) : res.status(404).json({ message: 'No User found' }))
+    .catch((error) => res.status(500).json({ error }))
 
-  } catch (error: any) {
-        if (error) serverError(error, res);
-      }
- 
 }
 
+async function getRoles(roles: String[] = [], res: Response) {
+  let results: IRoleOut[] = [];
+  if (roles.length) {
+    await Role.find({ name: { $in: roles } })
+      .then((roles) => {
+        results = roles;
+      })
+      .catch((error) => {
+        res.status(500).json({ error })
+      })
+  } else {
+    await Role.find({ name: "user" })
+      .then((role) => {
+        results = role;
+      })
+      .catch((error) => {
+        res.status(500).json({ error })
+      })
+  }
+
+  return results;
+
+}
 export { signin, signup, updateUser };

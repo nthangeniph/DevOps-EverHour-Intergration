@@ -9,6 +9,9 @@
             },
             "username":{
                 "type": "string"
+            },
+            "devOpsUsername":{
+                "type":"string"
             }
 
         }
@@ -67,12 +70,18 @@
                     },
                     "example": {
                       "pat": "zl3rt34z6eymdtzfz5sz7untamobwpg3fmdyl6uw5detdbmcxmaq",
-                      "username": "Phumudzo"
+                      "username": "Phumudzo",
+                      "devOpsUsername":"Phumudzo Nthangeni"
                     }
                       
                   }
                 }
             },
+            "security": [
+              {
+                 "Authorization": []
+              }
+            ],
             "responses": {
                 "200": {
                   "description": "All Resolved items",

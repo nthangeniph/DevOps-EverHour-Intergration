@@ -16,7 +16,7 @@
               "everhourkey": {
                 "type": "string"
               },
-              "userId": {
+              "user": {
                 "type": "string"
               }
         }
@@ -41,7 +41,7 @@
             { "$ref": "#/definitions/Account" },
             {"properties":{
               "accountHolder": {
-              "type": "string"
+                   "type": "string"
              }
             }
           }
@@ -69,7 +69,7 @@
           }
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "New account has been created",
             "content": {
               "application/json": {

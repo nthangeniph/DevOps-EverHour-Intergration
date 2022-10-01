@@ -11,7 +11,10 @@ create tsconfig.json file
 
 # Adding foreign key link , it is also useful for populating and querying
 # https://vegibit.com/mongoose-relationships-tutorial/
-                    "examples": {
-                      "pat": "zl3rt34z6eymdtzfz5sz7untamobwpg3fmdyl6uw5detdbmcxmaq",
-                      "username": "Phumudzo"
-                    }
+# https://learn.microsoft.com/en-us/azure/devops/boards/queries/wiql-syntax?view=azure-devops
+//learning more about wiql
+
+//update task
+# https://api.everhour.com/tasks/ev:258110920797535/time
+//Learn node with typescript
+# https://www.youtube.com/watch?v=72_5_YuDCNA&t=2534s

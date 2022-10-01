@@ -5,7 +5,7 @@ import config from '../config/auth.config';
 const User = db.user;
 const Role = db.role;
 const verifyToken = (req, res, next) => {
-  let token = req.headers["x-access-token"];
+  let token = req.headers.authorization;
   if (!token) {
     return res.status(403).send({ message: "No token provided!" });
   }
@@ -13,7 +13,7 @@ const verifyToken = (req, res, next) => {
     if (err) {
       return res.status(401).send({ message: "Unauthorized!" });
     }
-    req.userId = decoded.id;
+    req.body.userId = decoded.id;
     next();
   });
 };
