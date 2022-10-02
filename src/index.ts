@@ -141,7 +141,7 @@ request(options, function (error, response, body) {
     JSON.parse(body).filter(project => {
         return !!project.users.find(user => {
             if (user == 861229) {
-                //  console.log("response  ::",project)
+                console.log("response  ::", user == 861229)
             }
             return user == 861229
         })
@@ -151,11 +151,26 @@ request(options, function (error, response, body) {
 
 var optionsMe = {
     'method': 'GET',
-    'url': `https://api.everhour.com/users/me`,
+    'url': `https://api.everhour.com/timesheets/8612292236/tasks`,
     'headers': everHoursHeaders('0146-63cc-5847c7-079bc3-636a5cdf'),
 
 
 };
+//getting all relevant tasks for the week
+//https://api.everhour.com/timesheets/{userId}{year}{week}/tasks
+//https://api.everhour.com/timesheets/8612292236/tasks
+
+//adding new time
+//https://api.everhour.com/tasks/task_id/time
+//requires (date,time,comment,user)
+//POST METHOD
+//updating the time record/slot
+//https://api.everhour.com/tasks/task_id/time
+// PUT METHOD
+//deleting the time
+//https://api.everhour.com/tasks/task_id/time
+//DELETE METHOD
+//requires (user,date)
 request(optionsMe, function (error, response, body) {
-    console.log('Response-Me:', JSON.parse(body).id);
+    console.log('Response-Me:', JSON.parse(body));
 });
