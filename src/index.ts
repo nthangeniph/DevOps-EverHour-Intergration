@@ -10,9 +10,9 @@ import mongoose from 'mongoose';
 import { accRoute } from './routes/acc.routes';
 import { devOpsRoute } from './routes/devOps.routes';
 import { configRoute } from './routes/config.routes';
-import { everHoursHeaders } from './utils';
 import { config } from './config/config';
 import Logging from './library/Logging';
+import { everHourRoute } from './routes/everHour.routes';
 const router = express();
 
 
@@ -73,6 +73,7 @@ const StartServer = () => {
     accRoute(router)
     devOpsRoute(router);
     configRoute(router);
+    everHourRoute(router);
 
     /** Health Checks */
     router.get('/ping', (req, res, next) => res.status(200).json
@@ -127,50 +128,13 @@ function initial() {
     });
 }
 
-var request = require('request');
 
 
-var options = {
-    'method': 'GET',
-    'url': `https://api.everhour.com/projects`,
-    'headers': everHoursHeaders('0146-63cc-5847c7-079bc3-636a5cdf'),
+// var optionsMe = {
+//     'method': 'GET',
+//     'url': `https://api.everhour.com/timesheets/8612292236/tasks`,
+//     'headers': everHoursHeaders('0146-63cc-5847c7-079bc3-636a5cdf'),
 
 
-};
-request(options, function (error, response, body) {
-    JSON.parse(body).filter(project => {
-        return !!project.users.find(user => {
-            if (user == 861229) {
-                console.log("response  ::", user == 861229)
-            }
-            return user == 861229
-        })
+// };
 
-    }).splice(0, 10);
-});
-
-var optionsMe = {
-    'method': 'GET',
-    'url': `https://api.everhour.com/timesheets/8612292236/tasks`,
-    'headers': everHoursHeaders('0146-63cc-5847c7-079bc3-636a5cdf'),
-
-
-};
-//getting all relevant tasks for the week
-//https://api.everhour.com/timesheets/{userId}{year}{week}/tasks
-//https://api.everhour.com/timesheets/8612292236/tasks
-
-//adding new time
-//https://api.everhour.com/tasks/task_id/time
-//requires (date,time,comment,user)
-//POST METHOD
-//updating the time record/slot
-//https://api.everhour.com/tasks/task_id/time
-// PUT METHOD
-//deleting the time
-//https://api.everhour.com/tasks/task_id/time
-//DELETE METHOD
-//requires (user,date)
-request(optionsMe, function (error, response, body) {
-    console.log('Response-Me:', JSON.parse(body));
-});

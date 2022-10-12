@@ -10,7 +10,7 @@ import Joi from 'joi';
 export const ValidateSchema = (Schema: ObjectSchema) => {
     return async (req: Request, res: Response, next: NextFunction) => {
         try {
-            await Schema.validateAsync(req.body);
+            await Schema.validateAsync(req.body, { abortEarly: false });
 
             next();
         } catch (error) {

@@ -19,7 +19,7 @@ const authRoute = function (app) {
     ],
     signup
   );
-  app.post("/api/auth/signin", ValidateSchema(Schemas.user.signin), signin);
+  app.post("/api/auth/signin", signin);
   app.put("/api/auth/update/:id", updateUser)
 };
 
