@@ -1,0 +1,120 @@
+{
+    "definitions": {
+        "WeekTasksInput": {
+          "required": ["userId","xApiKey","userWeekId"],
+          "properties": {
+            "userId": {
+              "type": "string",
+              "uniqueItems": true
+            },
+            "xApiKey":{
+                "type": "string"
+            },
+            "userWeekId":{
+                "type":"string"
+            }
+
+        }
+      },
+    "TimeSlot":{
+                "properties": {
+
+                "id":{
+                    "type": "string"
+                },
+                "date":{
+                    "type": "string"
+                },
+                "comment":{
+                    "type": "string"
+                },
+                "manualTime":{
+                    "type": "number"
+                }
+            }
+
+    },
+    "TaskItem":{
+         "properties": {
+
+                "id":{
+                    "type": "string"
+                },
+                "name":{
+                    "type": "string"
+                },
+                "projectId":{
+                    "type": "string"
+                },
+                "projectName":{
+                    "type": "string"
+                },
+                "taskTimes":{
+                    "type": "array",
+                    "items":{
+                    "allOf": [
+                        { "$ref": "#/definitions/TimeSlot" }
+                      ]
+                     }
+                },
+                "totalTime":{
+                    "type": "number"
+                }
+            }
+
+    },
+    "WeekTasks": {
+            "type": "array",
+            "items":{
+            "allOf": [
+                { "$ref": "#/definitions/TaskItem" }
+            ]
+        }
+    
+        }
+    },
+
+"paths":{
+    "/api/everHour/getWeekTasks": {
+        "post": {
+            "tags" : ["EverHour"],
+            "requestBody": {
+                "description": "pull all recents tasks with their recorded times",
+                "required": " true",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/definitions/WeekTasksInput"
+                    },
+                    "example": {
+                      "userId":"861229",
+                      "xApiKey": "0146-63cc-5847c7-079bc3-636a5cdf",
+                      "userWeekId":"8612292236"
+                    }
+                      
+                  }
+                }
+            },
+            "security": [
+              {
+                 "Authorization": []
+              }
+            ],
+            "responses": {
+                "200": {
+                  "description": "All Resolved Tasks",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                         "$ref": "#/definitions/WorkItems"
+                        }
+                        
+                    }
+                  }
+                }
+              }
+
+        }
+    }
+ }
+}
