@@ -13,7 +13,10 @@ import { configRoute } from './routes/config.routes';
 import { config } from './config/config';
 import Logging from './library/Logging';
 import { everHourRoute } from './routes/everHour.routes';
+import cors from 'cors';
 const router = express();
+
+var request = require('request');
 
 
 mongoose
@@ -44,6 +47,7 @@ const StartServer = () => {
     );
     router.use((req, res, next) => {
         /** Log the Request */
+
         Logging.info(`Incoming -> Method: [${req.method}] -Url :[${req.url}] -IP: [${req.
             socket.remoteAddress}] -Status: [${res.statusCode}]`);
 
@@ -57,16 +61,28 @@ const StartServer = () => {
     }));
 
     /** Rules of our API */
-    router.use((req, res, next) => {
-        res.header('Access-Control-Allow-Origin', '*');
-        res.header('Access-Control-Allow-Header', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-        if (req.method == 'OPTIONS') {
-            res.header('Access-Control-Allow-Methods', 'PUT ,POST, PATCH, DELETE, GET');
-            return res.status(200).json({})
+    // router.use((req, res, next) => {
+    //     res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+    //     res.header('Access-Control-Allow-Header', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    //     if (req.method == 'OPTIONS') {
+    //         res.header('Access-Control-Allow-Methods', 'PUT ,POST, PATCH, DELETE, GET');
+    //         return res.status(200).json({})
+    //     }
+    //     next();
+    // });
+    var whitelist = ['http://localhost:3000/*', 'http://localhost:8080',]
+    var corsOptions = {
+        origin: function (origin, callback) {
+            if (whitelist.indexOf(origin) !== -1 || !origin) {
+                callback(null, true)
+            } else {
+                callback(new Error('Not allowed by CORS'))
+            }
         }
-        next();
-    });
+    }
 
+    //this will enable cors for all whitelisted sites
+    router.use(cors(corsOptions));
     /** Routes  */
     userRoute(router);
     authRoute(router);
@@ -87,7 +103,6 @@ const StartServer = () => {
     })
 
 }
-
 
 router.listen(config.server.port, () => {
     Logging.info(`Server is running on port ${config.server.port}.`);
@@ -127,14 +142,4 @@ function initial() {
         }
     });
 }
-
-
-
-// var optionsMe = {
-//     'method': 'GET',
-//     'url': `https://api.everhour.com/timesheets/8612292236/tasks`,
-//     'headers': everHoursHeaders('0146-63cc-5847c7-079bc3-636a5cdf'),
-
-
-// };
 

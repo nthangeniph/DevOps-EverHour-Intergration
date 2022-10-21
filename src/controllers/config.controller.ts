@@ -4,10 +4,9 @@ import { NextFunction, Request, Response } from 'express';
 
 const CreateConfig = (req: Request, res: Response, next: NextFunction) => {
 
-    const { userId, displayname } = req.body;
+    const { userId } = req.body;
 
     const configuration = new Configuration({
-        displayname,
         userId,
         ...req.body
 
@@ -32,7 +31,6 @@ const getConfiguration = (req: Request, res: Response, next: NextFunction) => {
                 id: account._id,
                 userId: account.userId,
                 companyname: account.companyname,
-                displayname: account.displayname,
                 projects: account.projects,
                 states: account.states,
                 dateFrom: account.dateFrom,
@@ -59,7 +57,6 @@ const updateConfig = async (req: Request, res: Response, next: NextFunction) => 
                     configuration: {
                         id: config._id,
                         userId: config.userId,
-                        displayname: config.displayname,
                         projects: config.projects,
                         states: config.states,
                         dateFrom: config.dateFrom,

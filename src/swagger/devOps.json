@@ -1,21 +1,5 @@
 {
-    "definitions": {
-        "DevOpsInPut": {
-          "required": ["pat","username"],
-          "properties": {
-            "pat": {
-              "type": "string",
-              "uniqueItems": true
-            },
-            "username":{
-                "type": "string"
-            },
-            "devOpsUsername":{
-                "type":"string"
-            }
-
-        }
-      } ,
+    "definitions": { 
         "WorkItem": {
             "properties": {
 
@@ -60,23 +44,6 @@
     "/api/devOps/getAllWorkItems": {
         "post": {
             "tags" : ["DevOps"],
-            "requestBody": {
-                "description": "pull all resolved items from current user",
-                "required": " true",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/definitions/DevOpsInPut"
-                    },
-                    "example": {
-                      "pat": "zl3rt34z6eymdtzfz5sz7untamobwpg3fmdyl6uw5detdbmcxmaq",
-                      "username": "Phumudzo",
-                      "devOpsUsername":"Phumudzo Nthangeni"
-                    }
-                      
-                  }
-                }
-            },
             "security": [
               {
                  "Authorization": []

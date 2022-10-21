@@ -3,8 +3,7 @@
         "Config": {
             "required": [
                 "companyname",
-                "userId",
-                "displayname"
+                "userId"
             ],
             "properties": {
                 "id": {
@@ -16,9 +15,6 @@
                     "items": {
                         "type": "string"
                     }
-                },
-                "displayname": {
-                    "type": "string"
                 },
                 "companyname": {
                     "type": "string"

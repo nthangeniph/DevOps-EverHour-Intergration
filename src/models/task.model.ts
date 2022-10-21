@@ -37,6 +37,11 @@ export interface ITaskInput {
 
 
 }
+export interface IWeekTasksInput {
+    userId?: string;
+    xApiKey?: string;
+    userWeekId?: string;
+}
 export interface IWeeklyTasks {
     id?: string;
     week?: IWeek;

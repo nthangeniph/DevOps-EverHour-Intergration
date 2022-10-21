@@ -1,14 +1,17 @@
 import { devopsHeaders } from "../utils";
 import { Request, Response, NextFunction } from 'express';
 import Configuration from "../models/configuration.model";
+import Account from "../models/account.model";
 
 
 var request = require('request');
 
 const getProjectData = async (req: Request, res: Response, next: NextFunction) => {
+
     try {
         var query = { 'userId': req.body.userId };
         let configuration;
+        let accountDetails;
 
         await Configuration.findOne(query)
             .then(account => {
@@ -17,7 +20,6 @@ const getProjectData = async (req: Request, res: Response, next: NextFunction) =
                         id: account._id,
                         userId: account.userId,
                         companyname: account.companyname,
-                        displayname: account.displayname,
                         projects: account.projects,
                         states: account.states,
                         dateFrom: account.dateFrom,
@@ -26,7 +28,20 @@ const getProjectData = async (req: Request, res: Response, next: NextFunction) =
                 }
             }
             )
-        const { username, pat, devOpsUsername } = req.body;
+        await Account.findOne({ 'user': req.body.userId })
+            .then(account => {
+                if (account) {
+                    accountDetails = {
+                        id: account._id,
+                        pat: account.pat,
+                        devOpsUsername: account.devOpsUsername,
+                        devOpsDisplayName: account.devOpsDisplayName
+
+                    }
+                }
+            }
+            )
+        const { devOpsDisplayName, pat, devOpsUsername } = accountDetails;
 
         const state = configuration.states.map(st => `'${st}'`).join(",");
         const statesFilter = state.length ? `[System.State] IN (${state})` : ' ';
@@ -39,12 +54,12 @@ const getProjectData = async (req: Request, res: Response, next: NextFunction) =
         var options = {
             'method': 'POST',
             'url': `https://dev.azure.com/${configuration.companyname}/_apis/wit/wiql?api-version=6.0`,
-            'headers': devopsHeaders({ username, pat }),
+            'headers': devopsHeaders({ username: devOpsUsername, pat }),
 
 
             body: JSON.stringify({
                 //"query": `Select [System.Id], [System.Title], [System.State] From WorkItems Where [System.State] IN (${state}) AND [System.AssignedTo] ='${devOpsUsername}' AND [System.ChangedDate] > '2022-09-01' `
-                "query": `Select [System.Id], [System.Title], [System.State] From WorkItems Where ${statesFilter}  ${projectsFilter} AND [System.AssignedTo] ='${devOpsUsername}'  `
+                "query": `Select [System.Id], [System.Title], [System.State] From WorkItems Where ${statesFilter}  ${projectsFilter} AND [System.AssignedTo] ='${devOpsDisplayName}'  `
             })
 
         };
@@ -59,12 +74,12 @@ const getProjectData = async (req: Request, res: Response, next: NextFunction) =
         await request(options, async function (error, response) {
             let ids = (JSON.parse(response.body).workItems.map(item => item.id));
 
-
+            console.log("Ids ::", ids)
 
             var options01 = {
                 'method': 'POST',
                 'url': 'https://dev.azure.com/boxfusion/_apis/wit/workitemsbatch?api-version=6.0',
-                'headers': devopsHeaders({ username, pat }),
+                'headers': devopsHeaders({ username: devOpsUsername, pat }),
 
 
                 body: JSON.stringify({
@@ -85,7 +100,7 @@ const getProjectData = async (req: Request, res: Response, next: NextFunction) =
 
             }
             await request(options01, async function (error, response) {
-
+                console.log("after ids ::", JSON.parse(response.body))
                 try {
                     if (error) res.status(500).json({ error })
                     res.status(200).send({

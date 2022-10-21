@@ -7,20 +7,20 @@ import Role, { IRole, IRoleOut } from '../models/role.model';
 
 
 const signup = async (req: Request, res: Response, next: NextFunction) => {
-
-  const { username, email, password } = req.body;
+  console.log("signup")
+  const { username, password } = req.body;
 
   const roles = await getRoles(req.body.roles, res);
 
-
-  const user = new User({ username, email, password: bcrypt.hashSync(password, 8), roles: roles.map(rol => rol._id) });
+  console.log("signup", roles)
+  const user = new User({ username, password: bcrypt.hashSync(password, 8), roles: roles.map(rol => rol._id) });
 
   return user.save()
     .then(user => res.status(201).json({
       user: {
         id: user._id,
         username: user.username,
-        email: user.email,
+        email: user.username,
         roles: roles.map(role => role.name)
       }
     }))
@@ -59,13 +59,13 @@ const signin = (req: Request, res: Response, next: NextFunction) => {
         email: user.email,
         roles: authorities,
       }, config, {
-        expiresIn: 7200  // 2 hours
+        expiresIn: 36000  // 4 hours
       });
 
       res.status(200).json({
         id: user._id,
         username: user.username,
-        email: user.email,
+        email: user.username,
         roles: authorities,
         accessToken: token
       });

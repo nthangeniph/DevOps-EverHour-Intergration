@@ -3,6 +3,7 @@ import db from '../models/index';
 const ROLES = db.ROLES;
 const User = db.user;
 const checkDuplicateUsernameOrEmail = (req, res, next) => {
+  console.log("got hrew")
   // Username
   User.findOne({
     username: req.body.username
@@ -16,7 +17,7 @@ const checkDuplicateUsernameOrEmail = (req, res, next) => {
       return;
     }
     // Email
-    if(!!req.body.email){
+    if (!!req.body.username) {
       User.findOne({
         email: req.body.email
       }).exec((err, user) => {

@@ -1,7 +1,7 @@
 {
     "definitions": {
         "Account": {
-          "required": ["pat", "devOpkey","everhourkey","user"],
+          "required": ["pat","xApiKey","devOpsDisplayName","devOpsUsername"],
           "properties": {
             "id": {
               "type": "string",
@@ -10,15 +10,20 @@
             "pat": {
               "type": "string"
             },
-            "devOpkey": {
+              "xApiKey": {
                 "type": "string"
               },
-              "everhourkey": {
+              "devOpsUsername": {
+                "type": "string"
+              },
+              "devOpsDisplayName": {
                 "type": "string"
               },
               "user": {
                 "type": "string"
               }
+          
+          
         }
     },
     "AccountEdit": {
@@ -26,12 +31,15 @@
         "pat": {
           "type": "string"
         },
-        "devOpkey": {
-            "type": "string"
-          },
-          "everhourkey": {
-            "type": "string"
-          }
+          "xApiKey": {
+                "type": "string"
+              },
+              "devOpsUsername": {
+                "type": "string"
+              },
+              "devOpsDisplayName": {
+                "type": "string"
+              }
     }
 },
     "Accounts": {

@@ -5,6 +5,7 @@ import { IAccount } from '../models/account.model';
 import { IConfig } from '../models/configuration.model';
 import { IUser } from '../models/user.model';
 import Joi from 'joi';
+import { IWeekTasksInput } from '../models/task.model';
 
 
 export const ValidateSchema = (Schema: ObjectSchema) => {
@@ -23,9 +24,10 @@ export const ValidateSchema = (Schema: ObjectSchema) => {
 export const Schemas = {
     account: {
         create: joi.object<IAccount>({
-            devOpkey: joi.string().required,
-            everhourkey: joi.string().required,
-            pat: joi.string().required,
+            devOpsDisplayName: joi.string().required(),
+            devOpsUsername: joi.string().required(),
+            xApiKey: joi.string().required(),
+            pat: joi.string().required(),
             user: joi.string()
                 .regex(/^[0-9a-fA-F]{24}$/)
                 .required(),
@@ -35,11 +37,14 @@ export const Schemas = {
     },
     configuration: {
         create: joi.object<IConfig>({
-            companyname: joi.string().required,
+            companyname: joi.string().required(),
+            projects: joi.array().required(),
+            states: joi.array().required(),
+            dateFrom: joi.string().required(),
+            dateTo: joi.string().required(),
             userId: joi.string()
                 .regex(/^[0-9a-fA-F]{24}$/)
-                .required(),
-            displayname: joi.string().required,
+                .required()
         }),
         update: joi.object<IConfig>({
             userId: joi.string()
@@ -50,17 +55,22 @@ export const Schemas = {
     },
     user: {
         create: joi.object<IUser>({
-            username: joi.string().required,
-            email: joi.string().required,
-            password: Joi.string().min(6).alphanum().required(),
+            username: joi.string().required(),
+            password: Joi.string().min(6).required(),
+            roles: joi.array(),
 
 
         }),
         signin: joi.object<IUser>({
             username: joi.string().required,
-            password: Joi.string().min(6).alphanum().required(),
+            password: Joi.string().min(6).required(),
         })
-    }
+    },
+    everHour: {
+        getWeekTasks: joi.object<IWeekTasksInput>({
 
+        })
+
+    }
 }
 

@@ -25,7 +25,7 @@ create tsconfig.json file
 
 //adding new time
 # https://api.everhour.com/tasks/task_id/time
-//requires (date,time,comment,user)
+//requires (date,time,comment,user,label)
 //POST METHOD
 //updating the time record/slot
 # https://api.everhour.com/tasks/task_id/time

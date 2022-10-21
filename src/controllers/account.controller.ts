@@ -5,8 +5,14 @@ import { IUserOut } from '../models/user.model';
 
 
 const createAccount = (req: Request, res: Response, next: NextFunction) => {
-    const { pat, devOpkey, user, everhourkey, userId } = req.body;
-    const account = new Account({ pat, devOpkey, user, everhourkey });
+    const { pat, devOpsUsername, user, xApiKey, devOpsDisplayName } = req.body;
+    const account = new Account({
+        pat,
+        devOpsUsername,
+        user,
+        devOpsDisplayName,
+        xApiKey
+    });
     return account
         .save()
         .then(account => res.status(201).json({ account }))
@@ -20,8 +26,9 @@ const getAllAccounts = (req: Request, res: Response, next: NextFunction) => {
             accounts: accounts.map(acc => ({
                 id: acc._id,
                 pat: acc.pat,
-                devOpkey: acc.devOpkey,
-                everhourkey: acc.everhourkey,
+                devOpsUsername: acc.devOpsUsername,
+                devOpsDisplayName: acc.devOpsDisplayName,
+                xApiKey: acc.xApiKey,
                 accountHolder: (acc.user as IUserOut).username,
                 userId: (acc.user as IUserOut)._id
             }))
@@ -44,8 +51,9 @@ const updateAccount = async (req: Request, res: Response, next: NextFunction) =>
                     account: {
                         id: account._id,
                         pat: account.pat,
-                        devOpkey: account.devOpkey,
-                        everhourkey: account.everhourkey,
+                        devOpsUsername: account.devOpsUsername,
+                        devOpsDisplayName: account.devOpsDisplayName,
+                        xApiKey: account.xApiKey,
                         accountHolder: (account.user as IUserOut).username,
                         userId: (account.user as IUserOut)._id
                     }
@@ -70,8 +78,9 @@ const getAccountById = async (req: Request, res: Response, next: NextFunction) =
             account: {
                 id: account._id,
                 pat: account.pat,
-                devOpkey: account.devOpkey,
-                everhourkey: account.everhourkey,
+                devOpsUsername: account.devOpsUsername,
+                devOpsDisplayName: account.devOpsDisplayName,
+                xApiKey: account.xApiKey,
                 accountHolder: (account.user as IUserOut).username,
                 userId: (account.user as IUserOut)._id
             }

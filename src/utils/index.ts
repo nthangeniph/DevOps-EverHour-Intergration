@@ -1,7 +1,7 @@
-
+var request = require('request');
 export interface IDevopsUser {
-    username?: String;
-    pat?: String;
+    username?: string;
+    pat?: string;
 }
 function devopsHeaders({ username, pat }: IDevopsUser) {
     const Authorization = `Basic ${Buffer.from(
@@ -9,7 +9,7 @@ function devopsHeaders({ username, pat }: IDevopsUser) {
     ).toString("base64")}`;
 
     return {
-        
+
         Authorization,
         'Content-Type': 'application/json',
     };
@@ -24,5 +24,29 @@ function everHoursHeaders(xApiKey: string) {
 
 }
 
-export { devopsHeaders, everHoursHeaders };
+async function getEverHourUserId(xApKey: string) {
+    var optionsMe = {
+        'method': 'GET',
+        'url': `https://api-ro.everhour.com/users/me`,
+        'headers': everHoursHeaders(xApKey),
+
+
+    };
+    let userId;
+
+    return new Promise((resolve, reject) => {
+        request(optionsMe, function (error, response, body) {
+            userId = JSON.parse(body).id;
+            if (JSON.parse(body).id) {
+                resolve(JSON.parse(body).id)
+            } else {
+                reject(({ message: "ever hour user not found" }))
+            }
+        });
+
+    })
+
+}
+
+export { devopsHeaders, everHoursHeaders, getEverHourUserId };
 
