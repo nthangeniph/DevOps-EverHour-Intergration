@@ -15,20 +15,27 @@ const updateTasks = async (req: Request, res: Response, next: NextFunction) => {
         var optionsMe = {
             'method': 'PUT',
             'url': `https://api.everhour.com/tasks/${taskId}/time`,
-            'headers': everHoursHeaders(xApiKey),
-            'body': JSON.stringify({ time, date, comment, user: userId })
+            'headers': {
+                'X-Api-Key': `${xApiKey}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "date": date,
+                "comment": comment,
+                "commentLine": null,
+                "user": userId,
+                "time": (3600 * time)
+            }),
 
 
         };
 
-        request(optionsMe, function (error, response, body) {
-            console.log("user ::", response, JSON.parse(body))
+        request(optionsMe, function (error, response) {
+            if (error) throw new Error(error);
+            const { comment, date, user, manualTime } = JSON.parse(response.body);
+            res.status(200).send({ comment, date, user, time: manualTime })
+        });
 
-            const { comment, date, user, time } = JSON.parse(body);
-
-            res.status(200).send({ comment, date, user, time })
-
-        })
     } catch (error) {
         res.status(500).json({ error })
         return;

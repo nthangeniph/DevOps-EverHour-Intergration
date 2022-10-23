@@ -14,6 +14,7 @@ import { config } from './config/config';
 import Logging from './library/Logging';
 import { everHourRoute } from './routes/everHour.routes';
 import cors from 'cors';
+import { commentRoute } from './routes/comment.routes';
 const router = express();
 
 var request = require('request');
@@ -90,6 +91,7 @@ const StartServer = () => {
     devOpsRoute(router);
     configRoute(router);
     everHourRoute(router);
+    commentRoute(router);
 
     /** Health Checks */
     router.get('/ping', (req, res, next) => res.status(200).json
