@@ -12,7 +12,7 @@
                     "uniqueItems": true
                 },
                 "markup": {
-                    "type": "string"
+                    "type": "object"
                 },
                 "week": {
                     "type": "number"
@@ -56,6 +56,11 @@
                         }
                     }
                 },
+            "security": [
+              {
+                 "Authorization": []
+              }
+              ],
                 "responses": {
                     "201": {
                         "description": "New coment has been saved",
@@ -70,29 +75,25 @@
                 }
             }
         },
-        "/api/comment/getComments": {
+        "/api/comment/getComments/{week}": {
             "get": {
                 "tags": [
                     "Comments"
                 ],
-                "requestBody": {
-                    "description": "get new comment in everHour",
+              "parameters": [
+                {
+                    "name": "week",
+                    "in": "path",
                     "required": " true",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                               "type": "object",
-                                "required":["week"],
-                                "properties":{
-                                    "week":{
-                                          "type": "string"
-                                    }
-                                }
-           
-                            }
-                        }
-                    }
-                },
+                    "description":"get new comment in everHour",
+                    "type": "number"
+                }
+            ],
+            "security": [
+              {
+                 "Authorization": []
+              }
+              ],
                 "responses": {
                     "200": {
                         "description": "Comment's for a week for a specific user",
@@ -110,7 +111,6 @@
                         }
                     }
                 }
-            }
         },
         "/api/comment/deleteCommentById/{id}": {
             "parameters": [
@@ -126,6 +126,11 @@
                 "tags": [
                     "Comments"
                 ],
+            "security": [
+              {
+                 "Authorization": []
+              }
+              ],
                 "responses": {
                     "200": {
                         "description": "Comment's for specific date ",
@@ -177,6 +182,11 @@
                     }
                   }
                 },
+              "security": [
+              {
+                 "Authorization": []
+              }
+              ],
                 "responses": {
                   "200": {
                     "description": "Task's Comment has been updated",
@@ -200,4 +210,5 @@
               }
         }
     
+}
 }

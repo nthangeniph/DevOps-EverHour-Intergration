@@ -1,13 +1,15 @@
 import Comment from '../models/comment.model';
 import { NextFunction, Request, Response } from 'express';
+import { getEverHourUserId } from '../utils';
 
-const CreateComment = (req: Request, res: Response, next: NextFunction) => {
-    const { userId, week, markup, taskdateid } = req.body;
+const createComment = async (req: Request, res: Response, next: NextFunction) => {
+    const { week, markup, taskdateid } = req.body;
+
+    let userId = await getEverHourUserId(req.body.xApiKey)
     const d = new Date();
     let year = d.getFullYear().toString().substring(2,);
-
     const comment = new Comment({
-        markup,
+        markup: JSON.stringify(markup),
         userweekid: `${userId}${year}${week}`,
         taskdateid
     });
@@ -20,8 +22,9 @@ const CreateComment = (req: Request, res: Response, next: NextFunction) => {
 
 };
 
-const getComments = (req: Request, res: Response, next: NextFunction) => {
-    const { userId, week } = req.body;
+const getComments = async (req: Request, res: Response, next: NextFunction) => {
+    const { week } = req.params;
+    let userId = await getEverHourUserId(req.body.xApiKey)
     const d = new Date();
     let year = d.getFullYear().toString().substring(2,);
     var query = { 'userweekid': `${userId}${year}${week}` };
@@ -31,13 +34,18 @@ const getComments = (req: Request, res: Response, next: NextFunction) => {
         query
     )
         .then(comments => {
-            let listOfComments = comments.map(({ markup }) => {
-                let markUpArray = JSON.parse(markup);
-                return markUpArray
+
+            let listOfComments = comments.map(({ markup, _id, userweekid, taskdateid }) => {
+
+                return ({
+                    _id,
+                    userweekid,
+                    taskdateid,
+                    markup: JSON.parse(markup)
+                })
             })
-            listOfComments.length ? res.status(200).json({
-                listOfComments
-            }) : res.status(404).json({ message: 'Not found' })
+            console.log("compare ::", listOfComments);
+            listOfComments.length ? res.status(200).json(listOfComments) : res.status(404).json({ message: 'Not found' })
         }
         ).catch((error) => res.status(500).json({ error }))
 
@@ -82,4 +90,4 @@ const deleteCommentById = async (req: Request, res: Response, next: NextFunction
 }
 
 
-export { CreateComment, updateComment, deleteCommentById, getComments }
+export { createComment, updateComment, deleteCommentById, getComments }

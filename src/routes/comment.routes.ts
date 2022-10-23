@@ -1,13 +1,23 @@
-import { CreateComment, deleteCommentById, getComments, updateComment } from "../controllers/comment.controller";
-import authJwt from "../middleware";
+import { createComment, deleteCommentById, getComments, updateComment } from "../controllers/comment.controller";
+import { getEverHourUserId } from '../middleware/getEverHourUserId';
 
 
 
 const commentRoute = function (app) {
-    app.post("/api/comment/createComment", authJwt.authJwt, CreateComment);
-    app.patch("/api/comment/updateComment", authJwt.authJwt, updateComment);
-    app.get("/api/comment/getComments", getComments);
-    app.delete("/api/comment/deleteCommentById", deleteCommentById)
+    app.post("/api/comment/createComment",
+        getEverHourUserId, createComment
+    );
+    app.get("/api/comment/getComments/:week",
+        getEverHourUserId,
+        getComments
+    );
+    app.patch("/api/comment/updateComment",
+        updateComment
+    );
+
+    app.delete("/api/comment/deleteCommentById",
+        deleteCommentById
+    );
 }
 
-export { commentRoute };
+export { commentRoute }; 

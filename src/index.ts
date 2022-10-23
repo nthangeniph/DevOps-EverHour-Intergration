@@ -90,8 +90,9 @@ const StartServer = () => {
     accRoute(router)
     devOpsRoute(router);
     configRoute(router);
-    everHourRoute(router);
     commentRoute(router);
+    everHourRoute(router);
+
 
     /** Health Checks */
     router.get('/ping', (req, res, next) => res.status(200).json
