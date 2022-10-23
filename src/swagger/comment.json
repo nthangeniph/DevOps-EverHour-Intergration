@@ -1,0 +1,203 @@
+{
+    "definitions": {
+        "Comment": {
+            "required": [
+                "markup",
+                 "week",
+                 "taskdateid"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "uniqueItems": true
+                },
+                "markup": {
+                    "type": "string"
+                },
+                "week": {
+                    "type": "number"
+                },
+                "taskdateid": {
+                    "type": "string"
+                }
+            }
+        },
+        "message": {
+            "properties": {
+                 "message": {
+                    "type": "string"
+                 }
+              
+            }
+        },
+        "CommentGet":{
+             "properties": {
+                 "message": {
+                    "type": "string"
+                 }
+              
+            }
+        }
+    },
+    "paths": {
+        "/api/comment/createComment": {
+            "post": {
+                "tags": [
+                    "Comments"
+                ],
+                "requestBody": {
+                    "description": "Create new comment in everHour",
+                    "required": " true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/Comment"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "New coment has been saved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/Comment"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/comment/getComments": {
+            "get": {
+                "tags": [
+                    "Comments"
+                ],
+                "requestBody": {
+                    "description": "get new comment in everHour",
+                    "required": " true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                               "type": "object",
+                                "required":["week"],
+                                "properties":{
+                                    "week":{
+                                          "type": "string"
+                                    }
+                                }
+           
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Comment's for a week for a specific user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                     "type": "array",
+                                      "items":{
+                                            "type": "string"
+                                           }
+                                   }
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/comment/deleteCommentById/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": " true",
+                    "description": "Delete an comment by userId",
+                    "type": "string"
+                }
+            ],
+            "delete": {
+                "tags": [
+                    "Comments"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Comment's for specific date ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref":"#/definitions/message"
+                                    }
+                                
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/api/comment/updateComment" :{
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": " true",
+                    "description": "Update a comment by userId",
+                    "type": "string"
+                }
+            ],
+            "requestBody": {
+                    "description": " new comment in everHour",
+                    "required": " true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/Comment"
+                            }
+                        }
+                    }
+                },
+            "patch": {
+                "tags": ["Comments"],
+                "requestBody": {
+                  "description": "Update comment of specific date",
+                  "required": " true",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/definitions/Config"
+                      }
+                        
+                    }
+                  }
+                },
+                "responses": {
+                  "200": {
+                    "description": "Task's Comment has been updated",
+                    "content": {
+                      "application/json": {
+                           "schema": {
+                               "type": "object",
+                                "required":["markup"],
+                                "properties":{
+                                    "markup":{
+                                          "type": "string"
+                                    }
+                                }
+           
+                            }
+                          
+                      }
+                    }
+                  }
+                }
+              }
+        }
+    
+}
