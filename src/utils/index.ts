@@ -14,6 +14,17 @@ function devopsHeaders({ username, pat }: IDevopsUser) {
         'Content-Type': 'application/json',
     };
 }
+function devopsPatchHeaders({ username, pat }: IDevopsUser) {
+    const Authorization = `Basic ${Buffer.from(
+        `${username}:${pat}`
+    ).toString("base64")}`;
+
+    return {
+
+        Authorization,
+        'Content-Type': 'application/json-patch+json',
+    };
+}
 function everHoursHeaders(xApiKey: string) {
 
     return {
@@ -48,5 +59,5 @@ async function getEverHourUserId(xApKey: string) {
 
 }
 
-export { devopsHeaders, everHoursHeaders, getEverHourUserId };
+export { devopsHeaders, everHoursHeaders, getEverHourUserId ,devopsPatchHeaders};
 

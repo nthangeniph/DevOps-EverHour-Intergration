@@ -1,9 +1,12 @@
-import { devopsHeaders } from "../utils";
+import { devopsHeaders, devopsPatchHeaders } from "../utils";
 import { Request, Response, NextFunction } from 'express';
 import Configuration from "../models/configuration.model";
 import Account from "../models/account.model";
 
-
+export interface IUpdateItem {
+    id?: number,
+    tracked?: boolean;
+}
 var request = require('request');
 
 const getProjectData = async (req: Request, res: Response, next: NextFunction) => {
@@ -72,9 +75,10 @@ const getProjectData = async (req: Request, res: Response, next: NextFunction) =
         //WHERE [System.ResolvedDate] >= '01-18-2019' GMT and [Resolved Date/Time] < '01-09-2019 GMT'
         //WHERE [Resolved Date] >= '01-18-2019 14:30:01'
         await request(options, async function (error, response) {
+            console.log("Ids ::", response)
             let ids = (JSON.parse(response.body).workItems.map(item => item.id));
 
-            console.log("Ids ::", ids)
+
 
             var options01 = {
                 'method': 'POST',
@@ -94,7 +98,8 @@ const getProjectData = async (req: Request, res: Response, next: NextFunction) =
                         "System.Tags",
                         "System.ChangedDate",
                         "Custom.Tracked",
-                        "Microsoft.VSTS.Common.StackRank"
+                        "Microsoft.VSTS.Common.StackRank",
+                        "Microsoft.VSTS.Scheduling.OriginalEstimate"
                     ]
                 })
 
@@ -105,6 +110,7 @@ const getProjectData = async (req: Request, res: Response, next: NextFunction) =
                     if (error) res.status(500).json({ error })
                     res.status(200).send({
                         items: JSON.parse(response.body).value.map(item => {
+                            console.log("all fields::", item.fields)
                             return ({
                                 id: item.id,
                                 title: item.fields['System.Title'],
@@ -112,7 +118,8 @@ const getProjectData = async (req: Request, res: Response, next: NextFunction) =
                                 workItemType: item.fields['System.WorkItemType'],
                                 teamProject: item.fields['System.TeamProject'],
                                 changedDate: item.fields['System.ChangedDate'],
-                                assignedTo: item.fields['System.AssignedTo'].displayName
+                                assignedTo: item.fields['System.AssignedTo'].displayName,
+                                timeEstimate: item.fields['Microsoft.VSTS.Scheduling.OriginalEstimate']
                             })
                         })
                     })
@@ -133,6 +140,70 @@ const getProjectData = async (req: Request, res: Response, next: NextFunction) =
     }
 
 }
+const updateWorkItems = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        let accountDetails;
 
 
-export { getProjectData }
+        const { workItems } = req.body;
+
+        await Account.findOne({ 'user': req.body.userId })
+            .then(account => {
+                if (account) {
+                    accountDetails = {
+                        id: account._id,
+                        pat: account.pat,
+                        devOpsUsername: account.devOpsUsername,
+                        devOpsDisplayName: account.devOpsDisplayName
+
+                    }
+                }
+            }
+            )
+        const { pat, devOpsUsername } = accountDetails;
+        let updateItems: Array<IUpdateItem> = workItems;
+
+
+        console.log("we here ::",req.body)
+
+        updateItems.forEach(async ({ id, tracked }, index) => {
+
+            var options01 = {
+                'method': 'PATCH',
+                'url': `https://dev.azure.com/boxfusion/_apis/wit/workitems/${id}?api-version=6.0`,
+                'headers': devopsPatchHeaders({ username: devOpsUsername, pat }),
+
+
+                body: JSON.stringify(
+                    [
+                        {
+                            op: "add",
+                            path: "/fields/Custom.Tracked",
+                            value: tracked,
+                        }
+
+                    ]
+                )
+
+            }
+
+            await request(options01, async function (error, response) {
+                console.log("tracked :;", (JSON.parse(response.body))['fields']['Custom.Tracked'])
+            })
+
+            if (index == updateItems.length - 1) {
+                res.status(200).json({
+                    message: 'devops items have been updated...'
+                })
+            }
+
+        })
+
+    }catch(error){
+        res.status(500).json({ error })
+        return;
+    }
+}
+
+
+export { getProjectData,updateWorkItems }

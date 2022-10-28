@@ -15,6 +15,7 @@ import Logging from './library/Logging';
 import { everHourRoute } from './routes/everHour.routes';
 import cors from 'cors';
 import { commentRoute } from './routes/comment.routes';
+import { devopsHeaders, devopsPatchHeaders } from './utils';
 const router = express();
 
 var request = require('request');
@@ -106,7 +107,7 @@ const StartServer = () => {
     })
 
 }
-
+updateDevops()
 router.listen(config.server.port, () => {
     Logging.info(`Server is running on port ${config.server.port}.`);
     //getProjectData('zl3rt34z6eymdtzfz5sz7untamobwpg3fmdyl6uw5detdbmcxmaq','Phumudzo')
@@ -146,3 +147,29 @@ function initial() {
     });
 }
 
+async function updateDevops(){
+
+    var options01 = {
+        'method': 'PATCH',
+        'url':'https://dev.azure.com/boxfusion/_apis/wit/workitems/44036?api-version=6.0',
+        'headers': devopsPatchHeaders({ username: "Phumudzo",pat: 'x73u3mb2jjmty6swvz5jftjwbkuadbzke7apmusww5ytidaqj4wa'}),
+
+
+        body: JSON.stringify(
+                [
+                    {
+                        op: "add",
+                        path: "/fields/Custom.Tracked",
+                        value: false,
+                    }
+
+            ]
+        )
+
+    }
+
+    await request(options01, async function (error, response) {
+        console.log("tracked :;",(JSON.parse(response.body))['fields']['Custom.Tracked'])
+    })
+}
+export {updateDevops};

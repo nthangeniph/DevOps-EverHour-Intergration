@@ -26,9 +26,31 @@
               },
               "assignedTo":{
                 "type": "string"
+            },
+            "timeEstimate":{
+                "type":"number"
             }
             }
         },
+        "UpdateWorkItem":{
+            "properties": {
+
+                "id":{
+                    "type": "number"
+                },
+                "tracked":{
+                    "type": "boolean"
+                }
+        }
+       },
+       "Message":{
+        "properties": {
+
+            "message":{
+                "type": "string"
+            }
+    }
+   },
         "WorkItems": {
             "type": "array",
             "items":{
@@ -37,9 +59,22 @@
             ]
         }
     
+        },
+        "UpdateWorkItems": {
+            "properties":{
+                "workItems":{
+                    "type": "array",
+                    "items":{
+                    "allOf": [
+                        { "$ref": "#/definitions/UpdateWorkItem" }
+                    ]
+                }
+            }
         }
-    },
-
+  
+        }
+    
+},
  "paths":{
     "/api/devOps/getAllWorkItems": {
         "post": {
@@ -56,6 +91,41 @@
                     "application/json": {
                       "schema": {
                          "$ref": "#/definitions/WorkItems"
+                        }
+                        
+                    }
+                  }
+                }
+              }
+
+        }
+    },
+    "/api/devOps/updateWorkItems": {
+        "patch": {
+            "tags" : ["DevOps"],
+            "security": [
+              {
+                 "Authorization": []
+              }
+            ],
+            "requestBody": {
+                "description": "Work items to be updated by ids",
+                "required": " true",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/definitions/UpdateWorkItems"
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                  "description": "All Update  items",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                         "$ref": "#/definitions/Message"
                         }
                         
                     }
