@@ -2,7 +2,7 @@
   "name": "devops-everhour-intergration",
   "version": "1.0.0",
   "description": "This will help with logging of hours to everHour",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "scripts": {
     "start": "nodemon src/index.ts",
     "dev": "nodemon --exec ts-node src/index.ts",

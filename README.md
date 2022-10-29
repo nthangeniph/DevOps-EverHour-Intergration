@@ -51,6 +51,6 @@ _/
 //requires (user,date)
 
 build docker
-//docker build -t myapi .
+//docker build -t myapi02 .
 get your images
 //docker images
