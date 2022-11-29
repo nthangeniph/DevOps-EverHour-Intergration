@@ -7,23 +7,31 @@ import Role, { IRole, IRoleOut } from '../models/role.model';
 
 
 const signup = async (req: Request, res: Response, next: NextFunction) => {
-  console.log("signup")
-  const { username, password } = req.body;
+
+  const { username, password, pat, devOpsDisplayName, devOpsUsername, xApiKey } = req.body;
 
   const roles = await getRoles(req.body.roles, res);
 
-  console.log("signup", roles)
-  const user = new User({ username, password: bcrypt.hashSync(password, 8), roles: roles.map(rol => rol._id) });
+
+  const user = new User({ username, password: bcrypt.hashSync(password, 8), pat, devOpsDisplayName, devOpsUsername, xApiKey, roles: roles.map(rol => rol._id) });
 
   return user.save()
-    .then(user => res.status(201).json({
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.username,
-        roles: roles.map(role => role.name)
-      }
-    }))
+    .then(user => {
+      res.status(201).json({
+        user: {
+          id: user._id,
+          username: user.username,
+          email: user.username,
+          pat: user.pat,
+          devOpsDisplayName: user.devOpsDisplayName,
+          devOpsUsername: user.devOpsUsername,
+          xApiKey: user.xApiKey,
+          roles: roles.map(role => role.name)
+        }
+      })
+
+
+    })
     .catch((error) => res.status(500).json({ error }))
 
 };
@@ -57,15 +65,23 @@ const signin = (req: Request, res: Response, next: NextFunction) => {
         id: user._id,
         username: user.username,
         email: user.email,
+        pat: user.pat,
+        devOpsDisplayName: user.devOpsDisplayName,
+        devOpsUsername: user.devOpsUsername,
+        xApiKey: user.xApiKey,
         roles: authorities,
       }, config, {
-        expiresIn: 36000  // 4 hours
+        expiresIn: 72000,
       });
 
       res.status(200).json({
         id: user._id,
         username: user.username,
         email: user.username,
+        pat: user.pat,
+        devOpsDisplayName: user.devOpsDisplayName,
+        devOpsUsername: user.devOpsUsername,
+        xApiKey: user.xApiKey,
         roles: authorities,
         accessToken: token
       });
@@ -92,6 +108,10 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
           id: user._id,
           username: user.username,
           email: user.email,
+          pat: user.pat,
+          devOpsDisplayName: user.devOpsDisplayName,
+          devOpsUsername: user.devOpsUsername,
+          xApiKey: user.xApiKey,
           roles: (user.roles as IRole[]).map(role => role.name)
         }
       }) : res.status(404).json({ message: 'No User found' }))

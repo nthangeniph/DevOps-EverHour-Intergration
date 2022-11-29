@@ -1,139 +1,170 @@
 {
-    "definitions": { 
+    "definitions": {
         "WorkItem": {
             "properties": {
-
-                "id":{
+                "id": {
                     "type": "string"
                 },
-                "title":{
+                "title": {
                     "type": "string"
                 },
-                "state":{
+                "state": {
                     "type": "string"
                 },
-                "workItemType":{
+                "workItemType": {
                     "type": "string"
                 },
-                "teamProject":{
+                "teamProject": {
                     "type": "string"
                 },
-                "tags":{
+                "tags": {
                     "type": "string"
                 },
-                "changedDate":{
-                  "type": "string"
-              },
-              "assignedTo":{
-                "type": "string"
-            },
-            "timeEstimate":{
-                "type":"number"
-            }
+                "changedDate": {
+                    "type": "string"
+                },
+                "tracked": {
+                    "type": "boolean"
+                },
+                "assignedTo": {
+                    "type": "string"
+                },
+                "timeEstimate": {
+                    "type": "number"
+                }
             }
         },
-        "UpdateWorkItem":{
+        "Project": {
             "properties": {
-
-                "id":{
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "UpdateWorkItem": {
+            "properties": {
+                "id": {
                     "type": "number"
                 },
-                "tracked":{
+                "tracked": {
                     "type": "boolean"
                 }
-        }
-       },
-       "Message":{
-        "properties": {
-
-            "message":{
-                "type": "string"
             }
-    }
-   },
-        "WorkItems": {
-            "type": "array",
-            "items":{
-            "allOf": [
-                { "$ref": "#/definitions/WorkItem" }
-            ]
-        }
-    
+        },
+        "Message": {
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "WorkItemsWithProjects": {
+            "properties": {
+                "WorkItems": {
+                    "type": "array",
+                    "items": {
+                        "allOf": [{ "$ref": "#/definitions/WorkItem" }]
+                    }
+                },
+                "Projects": {
+                    "type": "array",
+                    "items": {
+                        "allOf": [{ "$ref": "#/definitions/Project" }]
+                    }
+                }
+            }
         },
         "UpdateWorkItems": {
-            "properties":{
-                "workItems":{
+            "properties": {
+                "workItems": {
                     "type": "array",
-                    "items":{
-                    "allOf": [
-                        { "$ref": "#/definitions/UpdateWorkItem" }
-                    ]
+                    "items": {
+                        "allOf": [{ "$ref": "#/definitions/UpdateWorkItem" }]
+                    }
                 }
             }
         }
-  
-        }
-    
-},
- "paths":{
-    "/api/devOps/getAllWorkItems": {
-        "post": {
-            "tags" : ["DevOps"],
-            "security": [
-              {
-                 "Authorization": []
-              }
-            ],
-            "responses": {
-                "200": {
-                  "description": "All Resolved items",
-                  "content": {
-                    "application/json": {
-                      "schema": {
-                         "$ref": "#/definitions/WorkItems"
-                        }
-                        
-                    }
-                  }
-                }
-              }
-
-        }
     },
-    "/api/devOps/updateWorkItems": {
-        "patch": {
-            "tags" : ["DevOps"],
-            "security": [
-              {
-                 "Authorization": []
-              }
-            ],
-            "requestBody": {
-                "description": "Work items to be updated by ids",
-                "required": " true",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/definitions/UpdateWorkItems"
+    "paths": {
+        "/api/devOps/getAllWorkItems": {
+            "post": {
+                "tags": ["DevOps"],
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All Resolved items",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/WorkItemsWithProjects"
+                                }
+                            }
                         }
                     }
                 }
-            },
-            "responses": {
-                "200": {
-                  "description": "All Update  items",
-                  "content": {
-                    "application/json": {
-                      "schema": {
-                         "$ref": "#/definitions/Message"
-                        }
-                        
+            }
+        },
+        "/api/devOps/updateWorkItems": {
+            "patch": {
+                "tags": ["DevOps"],
+                "security": [
+                    {
+                        "Authorization": []
                     }
-                  }
+                ],
+                "requestBody": {
+                    "description": "Work items to be updated by ids",
+                    "required": " true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/UpdateWorkItems"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "All Update  items",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/Message"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
-
+            }
+        },
+        "/api/devOps/getAllProjects": {
+            "post": {
+                "tags": ["DevOps"],
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All Company's Projects",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/WorkItemsWithProjects/properties/Projects"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
- }
 }
