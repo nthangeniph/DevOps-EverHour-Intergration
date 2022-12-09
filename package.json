@@ -1,7 +1,7 @@
 {
   "name": "devops-everhour-intergration",
   "version": "1.0.0",
-  "description": "This will help with logging of hours to everHour",
+  "description": "This will help with logging of hours to everHours",
   "engines": {
     "node": "12.22.3"
   },
