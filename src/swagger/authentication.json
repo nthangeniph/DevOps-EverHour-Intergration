@@ -10,9 +10,6 @@
                 "username": {
                     "type": "string"
                 },
-                "email": {
-                    "type": "string"
-                },
                 "pat": {
                     "type": "string"
                 },

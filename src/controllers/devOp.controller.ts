@@ -55,6 +55,7 @@ const getProjectData = async (req: Request, res: Response, next: NextFunction) =
             var today = new Date();
             var priorDate = new Date(new Date().setDate(today.getDate() - 30)).toISOString().substring(0, 10);
             dateFilter = `AND [System.ChangedDate] >= '${priorDate}'`;
+
         }
 
         var options01 = {
@@ -62,6 +63,7 @@ const getProjectData = async (req: Request, res: Response, next: NextFunction) =
             url: 'https://dev.azure.com/boxfusion/_apis/projects?api-version=7.0',
             headers: devopsHeaders({ username: devOpsUsername, pat })
         };
+        console.log("state:", statesFilter, "teamProjects:", projectsFilter, "date ::", dateFilter)
         await request(options01, async function (error, response) {
             projects = JSON.parse(response.body).value.map((proj) => {
                 return {
@@ -76,13 +78,13 @@ const getProjectData = async (req: Request, res: Response, next: NextFunction) =
                 url: `https://dev.azure.com/${configuration.companyname}/_apis/wit/wiql?api-version=6.0`,
                 headers: devopsHeaders({ username: devOpsUsername, pat }),
 
-                body: JSON.stringify({
-                    query: `Select [System.Id], [System.Title], [System.State],[System.ChangedDate] From WorkItems Where ${statesFilter}  ${projectsFilter} AND [System.AssignedTo] ='${devOpsDisplayName}' ${dateFilter}`
-                })
+                // body: JSON.stringify({
+                //     query: `Select [System.Id], [System.Title], [System.State],[System.ChangedDate] From WorkItems Where ${statesFilter}  ${projectsFilter} AND [System.AssignedTo] ='${devOpsDisplayName}' ${dateFilter}`
+                // })
             };
 
-
             await request(options, async function (error, response) {
+                console.log("before Ids ::", JSON.parse(response.body))
 
                 let ids = !!JSON.parse(response.body) ? JSON.parse(response.body).workItems.map((item) => item.id) : [];
 
@@ -92,7 +94,6 @@ const getProjectData = async (req: Request, res: Response, next: NextFunction) =
                         method: 'POST',
                         url: 'https://dev.azure.com/boxfusion/_apis/wit/workitemsbatch?api-version=6.0',
                         headers: devopsHeaders({ username: devOpsUsername, pat }),
-
                         body: JSON.stringify({
                             ids: ids,
                             fields: [
