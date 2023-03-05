@@ -27,11 +27,14 @@ const updateTasks = async (req: Request, res: Response, next: NextFunction) => {
         };
 
         request(optionsMe, function (error, response) {
-            if (error) throw new Error(error);
+            if (JSON.parse(response.body).errors) throw new Error(JSON.stringify(JSON.parse(response.body).errors));
 
             const { comment, date, user, manualTime } = JSON.parse(response.body);
-            console.log("returned::", comment, date, user, manualTime);
+            console.log("everHour ::", error);
+
+
             res.status(200).json({ comment, date, user, time: manualTime });
+            return;
         });
     } catch (error) {
         res.status(500).json({ error });
@@ -47,8 +50,9 @@ const getWeekTasks = async (req: Request, res: Response, next: NextFunction) => 
 
         var timeSheets = [];
         let organisationProjects = await getAllProjects({ userId, xApiKey });
+
         for (let i = 0; i < count; i++) {
-            let week = getWeek(i);
+            let week = getWeek(i) < 10 ? `0${getWeek(i)}` : getWeek(i);
             const d = new Date();
             let year = d.getFullYear().toString().substring(2);
             var optionsMe = {
@@ -59,7 +63,6 @@ const getWeekTasks = async (req: Request, res: Response, next: NextFunction) => 
 
             request(optionsMe, async function (error, response, body) {
                 const { week, tasks, taskTime } = JSON.parse(body);
-
                 const taskTimes = (await !!taskTime)
                     ? (taskTime as Array<any>).reduce((obj, { date, comment, manualTime, task: { id } }) => {
                         if (!obj[id]) {
@@ -104,10 +107,11 @@ const getWeekTasks = async (req: Request, res: Response, next: NextFunction) => 
                     }
                     return task;
                 });
+
                 const dailyTimes = getDaysMonth(week.from, week.to);
                 timeSheets.push({ weekTasks, week, dailyTimes });
 
-                if (timeSheets.length == limit) { 
+                if (timeSheets.length == limit) {
                     const sortTimeSheet = timeSheets.sort(function (a, b) {
                         let start = parseInt(a.week.from.substring(5, 7));
                         let end = parseInt(b.week.from.substring(5, 7));

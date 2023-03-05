@@ -97,6 +97,7 @@ const StartServer = () => {
 }
 
 router.listen(config.server.port, () => {
+    debugger;
     Logging.info(`Server is running on port ${config.server.port}.`);
     //getProjectData('zl3rt34z6eymdtzfz5sz7untamobwpg3fmdyl6uw5detdbmcxmaq','Phumudzo')
 });

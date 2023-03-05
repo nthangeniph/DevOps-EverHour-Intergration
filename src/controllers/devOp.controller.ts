@@ -63,7 +63,6 @@ const getProjectData = async (req: Request, res: Response, next: NextFunction) =
             url: 'https://dev.azure.com/boxfusion/_apis/projects?api-version=7.0',
             headers: devopsHeaders({ username: devOpsUsername, pat })
         };
-        console.log("state:", statesFilter, "teamProjects:", projectsFilter, "date ::", dateFilter)
         await request(options01, async function (error, response) {
             projects = JSON.parse(response.body).value.map((proj) => {
                 return {
@@ -75,74 +74,84 @@ const getProjectData = async (req: Request, res: Response, next: NextFunction) =
 
             var options = {
                 method: 'POST',
-                url: `https://dev.azure.com/${configuration.companyname}/_apis/wit/wiql?api-version=6.0`,
+                url: `https://dev.azure.com/${configuration.companyname}/_apis/wit/wiql?api-version=7.0`,
                 headers: devopsHeaders({ username: devOpsUsername, pat }),
 
-                // body: JSON.stringify({
-                //     query: `Select [System.Id], [System.Title], [System.State],[System.ChangedDate] From WorkItems Where ${statesFilter}  ${projectsFilter} AND [System.AssignedTo] ='${devOpsDisplayName}' ${dateFilter}`
-                // })
+
+                body: JSON.stringify({
+                    query: `Select [System.Id], [System.Title], [System.State],[System.ChangedDate] From WorkItems Where ${statesFilter}  
+                              ${projectsFilter}${dateFilter}`
+                })
             };
 
             await request(options, async function (error, response) {
-                console.log("before Ids ::", JSON.parse(response.body))
-
-                let ids = !!JSON.parse(response.body) ? JSON.parse(response.body).workItems.map((item) => item.id) : [];
 
 
-                if (ids.length) {
-                    var options01 = {
-                        method: 'POST',
-                        url: 'https://dev.azure.com/boxfusion/_apis/wit/workitemsbatch?api-version=6.0',
-                        headers: devopsHeaders({ username: devOpsUsername, pat }),
-                        body: JSON.stringify({
-                            ids: ids,
-                            fields: [
-                                'System.Id',
-                                'System.Title',
-                                'System.State',
-                                'System.WorkItemType',
-                                'System.AssignedTo',
-                                'System.TeamProject',
-                                'System.Tags',
-                                'System.ChangedDate',
-                                'Custom.Tracked',
-                                'Microsoft.VSTS.Common.StackRank',
-                                'Microsoft.VSTS.Scheduling.OriginalEstimate'
-                            ]
-                        })
-                    };
-                    await request(options01, async function (error, response) {
-                        try {
-                            if (JSON.parse(response.body).message) res.status(500).json({ message: JSON.parse(response.body).message });
-                            res.status(200).send({
-                                items: JSON.parse(response.body).value.map((item) => {
-                                    return {
-                                        id: item.id,
-                                        title: item.fields['System.Title'],
-                                        state: item.fields['System.State'],
-                                        workItemType: item.fields['System.WorkItemType'],
-                                        teamProject: item.fields['System.TeamProject'],
-                                        changedDate: item.fields['System.ChangedDate'],
-                                        tracked: item.fields['Custom.Tracked'],
-                                        assignedTo: item.fields['System.AssignedTo'].displayName,
-                                        timeEstimate: item.fields['Microsoft.VSTS.Scheduling.OriginalEstimate']
-                                    };
-                                }),
-                                Projects: projects
-                            });
-                            return;
-                        } catch (err) {
-                            res.status(500).json({ message: err });
-                            return;
-                        }
-                    });
-                } else {
-                    res.status(200).send({
-                        items: [],
-                        Projects: projects
-                    });
-                    return;
+                let ids = !!JSON.parse(response.body) ? JSON.parse(response.body).workItems.map((item) => item.id).slice(0, 199) : [];
+
+
+                try {
+                    if (ids.length) {
+                        var options01 = {
+                            method: 'POST',
+                            url: 'https://dev.azure.com/boxfusion/_apis/wit/workitemsbatch?api-version=7.0',
+                            headers: devopsHeaders({ username: devOpsUsername, pat }),
+                            body: JSON.stringify({
+                                ids: ids,
+                                fields: [
+                                    'System.Id',
+                                    'System.Title',
+                                    'System.State',
+                                    'System.WorkItemType',
+                                    'System.AssignedTo',
+                                    'System.TeamProject',
+                                    'System.Tags',
+                                    'System.ChangedDate',
+                                    'Custom.Tracked',
+                                    'Microsoft.VSTS.Common.StackRank',
+                                    'Microsoft.VSTS.Scheduling.OriginalEstimate'
+                                ]
+                            })
+                        };
+                        await request(options01, async function (error, response) {
+
+
+                            try {
+                                if (JSON.parse(response.body).message) res.status(500).json({ message: JSON.parse(response.body).message });
+                                res.status(200).send({
+                                    items: JSON.parse(response.body).value.map((item) => {
+                                        return {
+                                            id: item.id,
+                                            title: item.fields['System.Title'],
+                                            state: item.fields['System.State'],
+                                            workItemType: item.fields['System.WorkItemType'],
+                                            teamProject: item.fields['System.TeamProject'],
+                                            changedDate: item.fields['System.ChangedDate'],
+                                            // tracked: item.fields['Custom.Tracked'],
+                                            tracked: false,
+                                            assignedTo: !!item.fields['System.AssignedTo'] ? item.fields['System.AssignedTo'].displayName : null,
+                                            timeEstimate: item.fields['Microsoft.VSTS.Scheduling.OriginalEstimate']
+                                        };
+                                    }).filter(itm => itm.assignedTo == "Phumudzo Nthangeni"),
+                                    Projects: projects
+                                });
+                                return;
+                            } catch (err) {
+                                res.status(500).json({ message: err });
+                                return;
+                            }
+                        });
+                    } else {
+                        res.status(200).send({
+                            items: [],
+                            Projects: projects
+                        });
+                        return;
+                    }
+                } catch (error) {
+                    console.log("before Ids ::", error)
                 }
+
             });
 
 
@@ -231,13 +240,14 @@ const updateWorkItems = async (req: Request, res: Response, next: NextFunction) 
 
             await request(options01, async function (error, response) {
                 console.log('tracked :;', JSON.parse(response.body)['fields']['Custom.Tracked']);
-            });
+          
 
             if (index == updateItems.length - 1) {
                 res.status(200).json({
                     message: 'devops items have been updated...'
                 });
             }
+        })
         });
     } catch (error) {
         res.status(500).json({ error });
