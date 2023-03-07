@@ -61,7 +61,7 @@ const StartServer = () => {
         extended: true
     }));
 
-    var whitelist = ['http://localhost:3000', 'http://localhost:8080', 'http://127.0.0.1:8080']
+    var whitelist = ['http://localhost:3000', 'http://localhost:8080', 'http://127.0.0.1:8080', 'https://nthangeniph-devops-everhour-intergration.onrender.com', 'https://nthangeniphumudzo-devops-everhour-front.onrender.com']
     var corsOptions = {
         origin: function (origin, callback) {
             if (whitelist.indexOf(origin) !== -1 || !origin) {
