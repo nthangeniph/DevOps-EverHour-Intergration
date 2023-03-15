@@ -86,7 +86,28 @@
             "items": {
                 "allOf": [{ "$ref": "#/definitions/WeekTasks" }]
             }
-        }
+        },
+        "AddTaskInput":{
+            "properties": {
+                "week": {
+                    "type": "string"
+                },
+                "tasks": {
+                   "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "GetProjectTaskInput":{
+             "required": ["taskId"],
+              "properties": {
+                "projectId": {
+                    "type": "string"
+                } 
+               }
+            }
     },
 
     "paths": {

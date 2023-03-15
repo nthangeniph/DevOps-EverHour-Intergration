@@ -41,6 +41,29 @@ const updateTasks = async (req: Request, res: Response, next: NextFunction) => {
         return;
     }
 };
+function getAllProjects({ xApiKey, userId }): Promise<Array<any>> {
+    return new Promise(async (resolve, reject) => {
+        var options = {
+            method: 'GET',
+            url: `https://api.everhour.com/projects`,
+            headers: everHoursHeaders(xApiKey)
+        };
+        let userProjects = [];
+        await request(options, async function (error, response, body) {
+            userProjects = await JSON.parse(body).filter((project) => {
+                return !!project.users.find((user) => {
+                    return user == userId;
+                });
+            });
+            if (userProjects) {
+                resolve(userProjects);
+            } else {
+                reject({ message: 'No Projects Found ' });
+            }
+        });
+        return userProjects;
+    });
+}
 const getWeekTasks = async (req: Request, res: Response, next: NextFunction) => {
     try {
         let userId = await getEverHourUserId(req.body.xApiKey);
@@ -65,6 +88,7 @@ const getWeekTasks = async (req: Request, res: Response, next: NextFunction) => 
                 const { week, tasks, taskTime } = JSON.parse(body);
                 const taskTimes = (await !!taskTime)
                     ? (taskTime as Array<any>).reduce((obj, { date, comment, manualTime, task: { id } }) => {
+
                         if (!obj[id]) {
                             obj[id] = [];
                         }
@@ -77,6 +101,7 @@ const getWeekTasks = async (req: Request, res: Response, next: NextFunction) => 
                                 manualTime
                             }
                         ];
+
                         return obj;
                     }, {})
                     : {};
@@ -105,6 +130,7 @@ const getWeekTasks = async (req: Request, res: Response, next: NextFunction) => 
                             }, 0);
                         return { ...task, totalTime: totalTime };
                     }
+                    console.log("comment", task)
                     return task;
                 });
 
@@ -132,13 +158,22 @@ const getWeekTasks = async (req: Request, res: Response, next: NextFunction) => 
     }
 };
 
-function getAllProjects({ xApiKey, userId }): Promise<Array<any>> {
-    return new Promise(async (resolve, reject) => {
+
+
+
+const getAllUserProjects = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        let userId = await getEverHourUserId(req.body.xApiKey);
+
+
+        const { xApiKey } = req.body;
+
         var options = {
             method: 'GET',
             url: `https://api.everhour.com/projects`,
             headers: everHoursHeaders(xApiKey)
         };
+
         let userProjects = [];
         await request(options, async function (error, response, body) {
             userProjects = await JSON.parse(body).filter((project) => {
@@ -146,14 +181,86 @@ function getAllProjects({ xApiKey, userId }): Promise<Array<any>> {
                     return user == userId;
                 });
             });
-            if (userProjects) {
-                resolve(userProjects);
-            } else {
-                reject({ message: 'No Projects Found ' });
-            }
-        });
-        return userProjects;
-    });
-}
 
-export { getWeekTasks, updateTasks };
+
+            res.status(200).json(userProjects);
+            return;
+        });
+    } catch (error) {
+        res.status(500).json({ error });
+        return;
+    }
+};
+
+
+
+const addNewTask = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        let userId = await getEverHourUserId(req.body.xApiKey);
+
+
+        const { xApiKey, week, tasks } = req.body;
+        const date = new Date();
+        let year = date.getFullYear().toString().substring(2);
+
+        var optionsMe = {
+            method: 'POST',
+            url: `https://api.everhour.com/timesheets/${userId}${year}${week}/tasks`,
+            headers: {
+                'X-Api-Key': `${xApiKey}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                tasks: tasks,
+            })
+        };
+
+        request(optionsMe, function (error, response) {
+            if (JSON.parse(response.body).errors) throw new Error(JSON.stringify(JSON.parse(response.body).errors));
+
+            const { task, id } = JSON.parse(response.body);
+            console.log("everHour ::", error);
+
+
+            res.status(200).json({ id, task });
+            return;
+        });
+    } catch (error) {
+        res.status(500).json({ error });
+        return;
+    }
+};
+const getProjectTasks = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+        const { xApiKey, projectId } = req.body;
+
+        var optionsMe = {
+            method: 'GET',
+            url: `https://api.everhour.com/projects/${projectId}/tasks?page=1&limit=250`,
+            headers: {
+                'X-Api-Key': `${xApiKey}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+
+            })
+        };
+
+        request(optionsMe, function (error, response) {
+            if (JSON.parse(response.body).errors) throw new Error(JSON.stringify(JSON.parse(response.body).errors));
+
+            const tasks = JSON.parse(response.body);
+            let nameIds = tasks.map(({ id, name }) => ({ id, name }))
+
+
+
+            res.status(200).json(nameIds);
+            return;
+        });
+    } catch (error) {
+        res.status(500).json({ error });
+        return;
+    }
+};
+export { getWeekTasks, updateTasks, addNewTask, getProjectTasks, getAllUserProjects };
