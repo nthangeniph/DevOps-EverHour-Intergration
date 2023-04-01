@@ -1,177 +1,190 @@
-{"definitions": {
-    "User": {
-      "required": ["username", "password"],
-      "properties": {
-        "id": {
-          "type": "string",
-          "uniqueItems": true
-        },
-        "username": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "roles": {
-          "type": "array",
-          "items": {
-            "type": "string"
-            }
-          },
-          "password": {
-             "type": "string"
-          }
-        }
-      },
-    "Users": {
-      "type": "array",
-      "$ref": "#/definitions/User"
-    },
-    "UserDto": {
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "username": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "roles": {
-          "type": "array",
-          "items": {
-            "type": "string"
-            }
-          }
-        }
-    },
-    "UserSignIn" :{
-       "properties":{
-          "username": {
-          "type": "string"
-         },
-         "password": {
-          "type": "string"
-        }
-       }
-    },
-    "userSignedIn" : {
-      "allOf": [
-        { "$ref": "#/definitions/UserDto" },
-        {"properties":{
-          "accessToken": {
-          "type": "string"
-         }
-        }
-      }
-      ]
-
-
-    }
-
-},
-
-  
-    "paths": {
-      "/api/auth/signup": {
-        "post": {
-          "tags": ["Authentications"],
-          "requestBody": {
-            "description": "Create new user in system",
-            "required": " true",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/definitions/User"
-                }
-                  
-              }
-            }
-          },
-          "responses": {
-            "200": {
-              "description": "New user is created",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/definitions/UserDto"
-                  }
-                    
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/auth/signin": {
-        "post": {
-          "tags": ["Authentications"],
-          "description": "Logging to the system",
-          "requestBody": {
-            "required": " true",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/definitions/UserSignIn"
-                }
-                  
-              }
-            }
-          },
-          "responses": {
-            "200": {
-              "description": "New user is created",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/definitions/userSignedIn"
-                  }
-                    
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/auth/update/{id}" :{
-        "parameters":[
-          {
-           "name": "id",
-           "in": "path",
-           "required":" true",
-           "description": "Update exist account  by id",
-           "type":"string"
-          }
-
-      ],
-        "put": {
-            "tags": ["Authentications"],
-            "requestBody": {
-              "description": "Update exist account in system",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/definitions/UserDto"
-                  }
-                    
-                }
-              }
-            },
-            "responses": {
-              "200": {
-                "description": "Account has been updated",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/definitions/UserDto"
+{
+    "definitions": {
+        "User": {
+            "required": ["username", "password", "pat", "xApiKey", "devOpsDisplayName", "devOpsUsername"],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "uniqueItems": true
+                },
+                "username": {
+                    "type": "string"
+                },
+                "pat": {
+                    "type": "string"
+                },
+                "xApiKey": {
+                    "type": "string"
+                },
+                "devOpsUsername": {
+                    "type": "string"
+                },
+                "devOpsDisplayName": {
+                    "type": "string"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
                     }
-                      
-                  }
+                },
+                "password": {
+                    "type": "string"
                 }
-              }
             }
-          }
-    }
+        },
+        "Users": {
+            "type": "array",
+            "$ref": "#/definitions/User"
+        },
+        "UserDto": {
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "pat": {
+                    "type": "string"
+                },
+                "xApiKey": {
+                    "type": "string"
+                },
+                "devOpsUsername": {
+                    "type": "string"
+                },
+                "devOpsDisplayName": {
+                    "type": "string"
+                },
+
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "UserSignIn": {
+            "properties": {
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "userSignedIn": {
+            "allOf": [
+                { "$ref": "#/definitions/UserDto" },
+                {
+                    "properties": {
+                        "accessToken": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+
+    "paths": {
+        "/api/auth/signup": {
+            "post": {
+                "tags": ["Authentications"],
+                "requestBody": {
+                    "description": "Create new user in system",
+                    "required": " true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/User"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "New user is created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/UserDto"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/signin": {
+            "post": {
+                "tags": ["Authentications"],
+                "description": "Logging to the system",
+                "requestBody": {
+                    "required": " true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/UserSignIn"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "New user is created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/userSignedIn"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/update/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": " true",
+                    "description": "Update exist account  by id",
+                    "type": "string"
+                }
+            ],
+            "put": {
+                "tags": ["Authentications"],
+                "requestBody": {
+                    "description": "Update exist account in system",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/UserDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Account has been updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/UserDto"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

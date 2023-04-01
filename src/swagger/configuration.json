@@ -1,10 +1,7 @@
 {
     "definitions": {
-        "Config": {
-            "required": [
-                "companyname",
-                "userId"
-            ],
+        "configurations": {
+            "required": ["companyname", "userId"],
             "properties": {
                 "id": {
                     "type": "string",
@@ -38,37 +35,34 @@
         },
         "message": {
             "properties": {
-                 "message": {
+                "message": {
                     "type": "string"
-                 }
-              
+                }
             }
         }
     },
     "paths": {
-        "/api/config/create": {
+        "/api/configurations/create": {
             "post": {
-                "tags": [
-                    "Configurations"
-                ],
+                "tags": ["Configurations"],
                 "requestBody": {
                     "description": "Create new configuration in system",
                     "required": " true",
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/definitions/Config"
+                                "$ref": "#/definitions/configurations"
                             }
                         }
                     }
                 },
                 "responses": {
                     "201": {
-                        "description": "New config has been created",
+                        "description": "New configurations has been created",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/definitions/Config"
+                                    "$ref": "#/definitions/configurations"
                                 }
                             }
                         }
@@ -76,27 +70,25 @@
                 }
             }
         },
-        "/api/config/getConfigById/{userId}": {
+        "/api/configurations/getConfigById": {
             "parameters": [
                 {
                     "name": "userId",
-                    "in": "path",
-                    "required": " true",
+                    "in": "query",
+                    "required": " false",
                     "description": "Find an conigurations by userId",
                     "type": "string"
                 }
             ],
             "get": {
-                "tags": [
-                    "Configurations"
-                ],
+                "tags": ["Configurations"],
                 "responses": {
                     "200": {
                         "description": "Account's configurations",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/definitions/Config"
+                                    "$ref": "#/definitions/configurations"
                                 }
                             }
                         }
@@ -104,7 +96,7 @@
                 }
             }
         },
-        "/api/config/deleteConfigById/{userId}": {
+        "/api/configurations/deleteConfigById/{userId}": {
             "parameters": [
                 {
                     "name": "userId",
@@ -115,55 +107,48 @@
                 }
             ],
             "delete": {
-                "tags": [
-                    "Configurations"
-                ],
+                "tags": ["Configurations"],
                 "responses": {
                     "200": {
                         "description": "Account's configurations",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref":"#/definitions/message"
-                                    }
-                                
+                                    "$ref": "#/definitions/message"
+                                }
                             }
                         }
                     }
                 }
             }
         },
-
-        "/api/config/update" :{
-        
+        "/api/configurations/update": {
             "patch": {
                 "tags": ["Configurations"],
                 "requestBody": {
-                  "description": "Update account configurations",
-                  "required": " true",
-                  "content": {
-                    "application/json": {
-                      "schema": {
-                        "$ref": "#/definitions/Config"
-                      }
-                        
+                    "description": "Update account configurations",
+                    "required": " true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/configurations"
+                            }
+                        }
                     }
-                  }
                 },
                 "responses": {
-                  "200": {
-                    "description": "Account's configurations has been updated",
-                    "content": {
-                      "application/json": {
-                        "schema": {
-                          "$ref": "#/definitions/Config"
+                    "200": {
+                        "description": "Account's configurations has been updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/configurations"
+                                }
+                            }
                         }
-                          
-                      }
                     }
-                  }
                 }
-              }
+            }
         }
     }
 }

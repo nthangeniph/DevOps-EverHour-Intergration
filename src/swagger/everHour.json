@@ -1,186 +1,252 @@
 {
     "definitions": {
         "WeekTasksInput": {
-          "required": ["week"],
-          "properties": {
-            "week":{
-                "type":"string"
-            }
-
-        }
-      },
-      "TaskUpdateInput": {
-          "required": ["time","date","taskId"],
-          "properties": {
-            "comment": {
-              "type": "string",
-              "uniqueItems": true
-            },
-            "date":{
-                "type": "string"
-            },
-            "taskId":{
-               "type": "string"
-            },
-            "time":{
-                "type":"string"
-            },
-            "label":{
-              "type": "array",
-                  "items":{
+            "required": ["limit"],
+            "properties": {
+                "limit": {
                     "type": "string"
-                  }
+                }
             }
+        },
+        "TaskUpdateInput": {
+            "required": ["time", "date", "taskId"],
+            "properties": {
+                "comment": {
+                    "type": "string",
+                    "uniqueItems": true
+                },
+                "date": {
+                    "type": "string"
+                },
+                "taskId": {
+                    "type": "string"
+                },
+                "time": {
+                    "type": "string"
+                }
+            }
+        },
 
-        }
-      },
-
-    "TimeSlot":{
-         "properties": {
-            "id":{
-               "type": "string"
+        "TimeSlot": {
+            "properties": {
+                "id": {
+                    "type": "string"
                 },
-               "date":{
-                 "type": "string"
+                "date": {
+                    "type": "string"
                 },
-               "comment":{
-                  "type": "string"
+                "comment": {
+                    "type": "string"
                 },
-               "manualTime":{
+                "manualTime": {
                     "type": "number"
                 }
             }
+        },
 
-    },
-
-  
-    "TaskItem":{
-         "properties": {
-
-                "id":{
+        "TaskItem": {
+            "properties": {
+                "id": {
                     "type": "string"
                 },
-                "name":{
+                "name": {
                     "type": "string"
                 },
-                "projectId":{
+                "projectId": {
                     "type": "string"
                 },
-                "projectName":{
+                "projectName": {
                     "type": "string"
                 },
                 "taskTimes": {
                     "type": "array",
-                    "items":{
-                         "$ref": "#/definitions/TimeSlot"
-                         }
-                     },
-                "dailyTime":{
-                  "type": "array",
-                  "items":{
-                    "type": "string"
-                  }
-
+                    "items": {
+                        "$ref": "#/definitions/TimeSlot"
+                    }
                 },
-                "totalTime":{
+                "dailyTime": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "totalTime": {
                     "type": "number"
                 }
             }
-          
-
-    },
-    "WeekTasks": {
+        },
+        "WeekTasks": {
             "type": "array",
-            "items":{
-            "allOf": [
-                { "$ref": "#/definitions/TaskItem" }
-            ]
-        }
-    
-        }
-    },
-
-"paths":{
-    "/api/everHour/getWeekTasks": {
-        "post": {
-            "tags" : ["EverHour"],
-            "requestBody": {
-                "description": "pull all recents tasks with their recorded times",
-                "required": " true",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/definitions/WeekTasksInput"
-                    },
-                    "example": {
-                      "week":"36"
+            "items": {
+                "allOf": [{ "$ref": "#/definitions/TaskItem" }]
+            }
+        },
+        "timeSheets": {
+            "type": "array",
+            "items": {
+                "allOf": [{ "$ref": "#/definitions/WeekTasks" }]
+            }
+        },
+        "AddTaskInput": {
+            "properties": {
+                "week": {
+                    "type": "string"
+                },
+                "tasks": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
                     }
-                      
-                  }
                 }
-            },
-            "security": [
-              {
-                 "Authorization": []
-              }
-            ],
-            "responses": {
-                "200": {
-                  "description": "All Resolved Tasks",
-                  "content": {
-                    "application/json": {
-                      "schema": {
-                         "$ref": "#/definitions/WeekTasks"
-                        }
-                        
-                    }
-                  }
+            }
+        },
+        "GetProjectTaskInput": {
+            "required": ["taskId"],
+            "properties": {
+                "projectId": {
+                    "type": "string"
                 }
-              }
-
+            }
         }
     },
-     "/api/everHour/updateTask": {
-        "put": {
-            "tags" : ["EverHour"],
-            "requestBody": {
-                "description": "update the task time ,comment, label",
-                "required": " true",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "$ref": "#/definitions/TaskUpdateInput"
-                    },
-                    "example": {
-                      "time":"180",
-                      "date": "2022-10-20",
-                      "comment":"Ph testing....",
-                      "taskId":"ev:254620015597338"
-                    }
-                      
-                  }
-                }
-            },
-            "security": [
-              {
-                 "Authorization": []
-              }
-            ],
-            "responses": {
-                "200": {
-                  "description": "Updated Tasks",
-                  "content": {
-                    "application/json": {
-                      "schema": {
-                         "$ref": "#/definitions/TaskUpdateInput"
-                        }
-                        
-                    }
-                  }
-                }
-              }
 
+    "paths": {
+        "/api/everHour/getWeekTasks": {
+            "post": {
+                "tags": ["EverHour"],
+                "requestBody": {
+                    "description": "pull all recents tasks with their recorded times",
+                    "required": " true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/WeekTasksInput"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All Resolved Tasks",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/timeSheets"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/everHour/getProjectTasks": {
+            "get": {
+                "tags": ["EverHour"],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "query",
+                        "required": " true",
+                        "description": "pull all recents tasks associated with a project",
+                        "type": "string"
+                    }
+                ],
+
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All Resolved Tasks",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/timeSheets"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/everHour/addNewTask": {
+            "post": {
+                "tags": ["EverHour"],
+                "requestBody": {
+                    "description": "Add a new task to the week",
+                    "required": " true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/AddTaskInput"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "New add Task to the week",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/timeSheets"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/everHour/updateTask": {
+            "put": {
+                "tags": ["EverHour"],
+                "requestBody": {
+                    "description": "update the task time ,comment",
+                    "required": " true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/TaskUpdateInput"
+                            },
+                            "example": {
+                                "time": "180",
+                                "date": "2022-10-20",
+                                "comment": "Ph testing....",
+                                "taskId": "ev:254620015597338"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated Tasks",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/TaskUpdateInput"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
- }
 }

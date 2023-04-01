@@ -22,6 +22,7 @@ const userRoute = function (app) {
     [authJwt.verifyToken, authJwt.isAdmin],
     adminBoard
   );
+
 };
 
 export default userRoute;

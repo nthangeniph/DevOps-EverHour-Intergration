@@ -14,6 +14,13 @@ const verifyToken = (req, res, next) => {
       return res.status(401).send({ message: "Unauthorized!" });
     }
     req.body.userId = decoded.id;
+    req.body.devOpsDisplayName = decoded.devOpsDisplayName;
+    req.body.devOpsUsername = decoded.devOpsUsername;
+    req.body.pat = decoded.pat;
+    req.body.xApiKey = decoded.xApiKey;
+
+
+
     next();
   });
 };

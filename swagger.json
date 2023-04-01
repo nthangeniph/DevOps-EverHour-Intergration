@@ -1,64 +1,63 @@
 {
-    "openapi": "3.0.1",
-    "info": {
-      "version": "1.0.0", 
-      "title": "DevOpsEverHour Integration",
-      "description": "DevOpsEverHour Application APIs",
-      "license": {
-        "name": "MIT",
-        "url": "https://opensource.org/licenses/MIT"
-      },
-      "contact":{
-        "name": "Nthangeni Phumudzo",
-         "email": "Nthangeniph@gmail.com"
-      }
+  "openapi": "3.0.1",
+  "info": {
+    "version": "1.0.0",
+    "title": "DevOpsEverHour Integration",
+    "description": "DevOpsEverHour Application APIs",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
     },
-    "components": {
-      "securitySchemes": {
-        "Authorization": {
-          "type": "apiKey",
-          "name": "authorization",
-           "in": "header",
-           "description": "Authentication token"
-        
-        }
-      }
-    },
-    "security":{
-      "jwt": []
-    },
-    "securityDefinitions": {
+    "contact": {
+      "name": "Nthangeni Phumudzo",
+      "email": "Nthangeniph@gmail.com"
+    }
+  },
+
+  "components": {
+    "securitySchemes": {
       "Authorization": {
+        "type": "apiKey",
+        "name": "authorization",
+        "in": "header",
+        "description": "Authentication token"
+      }
+    }
+  },
+  "security": {
+    "jwt": []
+  },
+  "securityDefinitions": {
+    "Authorization": {
       "type": "apiKey",
       "name": "authorization",
       "in": "header",
       "description": "Authentication token"
     }
   },
-    "swagger": "3.0",
-    "host": "localhost:8000",
-    "basePath": "/",
-    "tags": [
-      {
-        "name": "Authentications",
-        "description": "API for users in the system"
-      },
-      {
-        "name": "Accounts",
-        "description": "API for accounts in the system"
-      },
-      {
-        "name": "DevOps",
-        "description": "API for devOps items"
-      },
-      {
-        "name": "Configurations",
-        "description": "Apis used to assist with filtering"
-      }
-    ],
+  "swagger": "3.1.0",
+  "host": "localhost:8000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Authentications",
+      "description": "API for users in the system"
+    },
+    {
+      "name": "Accounts",
+      "description": "API for accounts in the system"
+    },
+    {
+      "name": "DevOps",
+      "description": "API for devOps items"
+    },
+    {
+      "name": "Configurations",
+      "description": "Apis used to assist with filtering"
+    }
+  ],
 
-
-    "schemes": ["https"],
-    "consumes": ["application/json"],
-    "produces": ["application/json"]
-  }
+  "schemes": ["https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"]
+}

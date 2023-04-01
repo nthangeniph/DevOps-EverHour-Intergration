@@ -1,12 +1,14 @@
 {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.bracketPairColorization.enabled": true,
-    "editor.formatOnSave": true,
-    "editor.formatOnPaste": true,
-    "editor.wordWrap": "on",
-    "git.ignoreLimitWarning": true,
-    "dotenv.enableAutocloaking": false,
-    "[typescript]": {
-        "editor.defaultFormatter": "vscode.typescript-language-features"
-    }
-  }
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.bracketPairColorization.enabled": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.wordWrap": "on",
+  "git.ignoreLimitWarning": true,
+  "dotenv.enableAutocloaking": false,
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "appService.defaultWebAppToDeploy": "/subscriptions/a3050f05-feaa-436b-b615-9831c178ca16/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/DevOpsEverHour-Integration",
+  "appService.deploySubpath": "."
+}

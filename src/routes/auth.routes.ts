@@ -1,5 +1,5 @@
 import verifySignUp from '../middleware/verifySignUp';
-import { signin, signup, updateUser } from '../controllers/auth.controller'
+import { getSchema, signin, signup, updateUser } from '../controllers/auth.controller'
 import { Schemas, ValidateSchema } from '../middleware/ValidateSchema';
 
 const authRoute = function (app) {
@@ -21,6 +21,7 @@ const authRoute = function (app) {
   );
   app.post("/api/auth/signin", signin);
   app.put("/api/auth/update/:id", updateUser)
+  app.get("/api/auth", getSchema)
 };
 
 export default authRoute;

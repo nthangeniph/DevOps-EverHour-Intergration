@@ -6,6 +6,10 @@ export interface IUser {
   email?: String;
   password?: String;
   roles?: Array<Schema.Types.ObjectId>;
+  xApiKey?: String;
+  devOpsDisplayName?: String;
+  pat?: String;
+  devOpsUsername?: String;
 }
 export interface IUserOut {
   _id?: String;
@@ -13,6 +17,10 @@ export interface IUserOut {
   email?: String;
   password?: String;
   roles?: Array<IRoleOut>;
+  xApiKey?: String;
+  devOpsDisplayName?: String;
+  pat?: String;
+  devOpsUsername?: String;
 }
 export interface IUserModel extends IUser, Document {
 
@@ -21,6 +29,10 @@ const userSchema = new Schema({
   username: { type: String, required: true },
   email: { type: String, required: false },
   password: { type: String, required: true },
+  xApiKey: { type: String, required: true },
+  devOpsDisplayName: { type: String, required: true },
+  pat: { type: String, required: true },
+  devOpsUsername: { type: String, required: true },
   roles: [
     {
       type: mongoose.Schema.Types.ObjectId,

@@ -1,8 +1,11 @@
 {
   "name": "devops-everhour-intergration",
   "version": "1.0.0",
-  "description": "This will help with logging of hours to everHour",
-  "main": "index.ts",
+  "description": "This will help with logging of hours to everHours",
+  "engines": {
+    "node": "12.22.3"
+  },
+  "main": "src/index.ts",
   "scripts": {
     "start": "nodemon src/index.ts",
     "dev": "nodemon --exec ts-node src/index.ts",
@@ -28,11 +31,14 @@
     "@types/lodash": "^4.14.185",
     "@types/swagger-jsdoc": "^6.0.1",
     "@types/swagger-ui-express": "^4.1.3",
+    "azure": "^2.3.1-preview",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.0",
     "bson": "^4.7.0",
     "chalk": "^4.1.2",
+    "cli": "^1.0.1",
     "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "express": "^4.18.1",
     "joi": "^17.6.1",
     "jsonwebtoken": "^8.5.1",
@@ -40,10 +46,12 @@
     "mongodb": "^4.10.0",
     "mongoose": "^6.5.4",
     "node-fetch": "^2.6.7",
-    "nodemon": "^2.0.19",
+    "nodemon": "^2.0.20",
     "prettier": "^2.7.1",
     "request": "^2.88.2",
+    "swagger-client": "^3.19.5",
     "swagger-jsdoc": "^6.2.5",
-    "swagger-ui-express": "^4.5.0"
+    "swagger-ui-express": "^4.5.0",
+    "ts-node": "^10.9.1"
   }
 }

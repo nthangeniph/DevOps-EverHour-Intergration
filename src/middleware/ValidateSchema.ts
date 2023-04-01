@@ -1,7 +1,6 @@
 import joi, { ObjectSchema } from 'joi';
 import { Request, Response, NextFunction } from 'express';
 import Logging from '../library/Logging';
-import { IAccount } from '../models/account.model';
 import { IConfig } from '../models/configuration.model';
 import { IUser } from '../models/user.model';
 import Joi from 'joi';
@@ -22,26 +21,12 @@ export const ValidateSchema = (Schema: ObjectSchema) => {
 }
 
 export const Schemas = {
-    account: {
-        create: joi.object<IAccount>({
-            devOpsDisplayName: joi.string().required(),
-            devOpsUsername: joi.string().required(),
-            xApiKey: joi.string().required(),
-            pat: joi.string().required(),
-            user: joi.string()
-                .regex(/^[0-9a-fA-F]{24}$/)
-                .required(),
-        }),
-        update: joi.object<IAccount>({
-        })
-    },
+
     configuration: {
         create: joi.object<IConfig>({
             companyname: joi.string().required(),
             projects: joi.array().required(),
             states: joi.array().required(),
-            dateFrom: joi.string().required(),
-            dateTo: joi.string().required(),
             userId: joi.string()
                 .regex(/^[0-9a-fA-F]{24}$/)
                 .required()
@@ -49,7 +34,7 @@ export const Schemas = {
         update: joi.object<IConfig>({
             userId: joi.string()
                 .regex(/^[0-9a-fA-F]{24}$/)
-                .required(),
+                .required()
         })
 
     },
@@ -57,6 +42,10 @@ export const Schemas = {
         create: joi.object<IUser>({
             username: joi.string().required(),
             password: Joi.string().min(6).required(),
+            devOpsDisplayName: joi.string().required(),
+            devOpsUsername: joi.string().required(),
+            xApiKey: joi.string().required(),
+            pat: joi.string().required(),
             roles: joi.array(),
 
 

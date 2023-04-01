@@ -1,20 +1,20 @@
-import { CreateConfig, deleteConfigById, getConfiguration, updateConfig } from "../controllers/config.controller";
-import { Schemas, ValidateSchema } from "../middleware/ValidateSchema";
+import { createConfig, deleteConfigById, getConfiguration, updateConfig, getSchema } from "../controllers/config.controller";
+import authJwt from '../middleware/authJwt';
 import { checkConfigExisted, checkConfigNew, checkUserExist } from "../middleware/verifyConfig";
 
 
-const configRoute = function (app) {
-    app.post("/api/config/create", [
+const configurationsRoute = function (app) {
+    app.post("/api/configurations/create", [
         checkConfigNew,
         checkUserExist,
-        ValidateSchema(Schemas.configuration.create)
-    ], CreateConfig);
-    app.patch("/api/config/update",
-        ValidateSchema(Schemas.configuration.update),
+    ], createConfig);
+    app.patch("/api/configurations/update",
+        authJwt.verifyToken,
         updateConfig
     );
-    app.get("/api/config/getConfigById/:userId", getConfiguration);
-    app.delete("/api/config/deleteConfigById/:userId", checkConfigExisted, deleteConfigById)
+    app.get("/api/configurations/getConfigById/", getConfiguration);
+    app.delete("/api/configurations/deleteConfigById/:userId", checkConfigExisted, deleteConfigById);
+    app.get("/api/configurations", getSchema)
 }
 
-export { configRoute };
+export { configurationsRoute };

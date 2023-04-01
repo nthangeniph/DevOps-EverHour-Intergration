@@ -7,19 +7,16 @@ import combinedJson from './swagger';
 import swaggerUi from 'swagger-ui-express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
-import { accRoute } from './routes/acc.routes';
 import { devOpsRoute } from './routes/devOps.routes';
-import { configRoute } from './routes/config.routes';
+import { configurationsRoute } from './routes/config.routes';
 import { config } from './config/config';
 import Logging from './library/Logging';
 import { everHourRoute } from './routes/everHour.routes';
 import cors from 'cors';
 import { commentRoute } from './routes/comment.routes';
-import { devopsHeaders, devopsPatchHeaders } from './utils';
+
+
 const router = express();
-
-var request = require('request');
-
 
 mongoose
     .connect(config.mongo.url, {
@@ -62,17 +59,13 @@ const StartServer = () => {
         extended: true
     }));
 
-    /** Rules of our API */
-    // router.use((req, res, next) => {
-    //     res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-    //     res.header('Access-Control-Allow-Header', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    //     if (req.method == 'OPTIONS') {
-    //         res.header('Access-Control-Allow-Methods', 'PUT ,POST, PATCH, DELETE, GET');
-    //         return res.status(200).json({})
-    //     }
-    //     next();
-    // });
-    var whitelist = ['http://localhost:3000/*', 'http://localhost:8080',]
+    var whitelist = [
+        'http://localhost:3000',
+        'http://localhost:8080',
+        'http://127.0.0.1:8080',
+        'https://nthangeniph-devops-everhour-intergration.onrender.com',
+        'https://nthangeniphumudzo-devops-everhour-front.onrender.com'
+    ]
     var corsOptions = {
         origin: function (origin, callback) {
             if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -87,10 +80,9 @@ const StartServer = () => {
     router.use(cors(corsOptions));
     /** Routes  */
     userRoute(router);
+    configurationsRoute(router);
     authRoute(router);
-    accRoute(router)
     devOpsRoute(router);
-    configRoute(router);
     commentRoute(router);
     everHourRoute(router);
 
@@ -101,20 +93,22 @@ const StartServer = () => {
 
     /** Error handling */
     router.use((req, res, next) => {
-        const error = new Error('not found');
+        const error = new Error('not found url');
         Logging.error(error);
         return res.status(404).json({ message: error.message })
     })
 
 }
-updateDevops()
+
 router.listen(config.server.port, () => {
+
     Logging.info(`Server is running on port ${config.server.port}.`);
-    //getProjectData('zl3rt34z6eymdtzfz5sz7untamobwpg3fmdyl6uw5detdbmcxmaq','Phumudzo')
+
 });
 
 
 const Role = db.role;
+
 
 function initial() {
     Role.estimatedDocumentCount((err, count) => {
@@ -147,29 +141,4 @@ function initial() {
     });
 }
 
-async function updateDevops(){
 
-    var options01 = {
-        'method': 'PATCH',
-        'url':'https://dev.azure.com/boxfusion/_apis/wit/workitems/44036?api-version=6.0',
-        'headers': devopsPatchHeaders({ username: "Phumudzo",pat: 'x73u3mb2jjmty6swvz5jftjwbkuadbzke7apmusww5ytidaqj4wa'}),
-
-
-        body: JSON.stringify(
-                [
-                    {
-                        op: "add",
-                        path: "/fields/Custom.Tracked",
-                        value: false,
-                    }
-
-            ]
-        )
-
-    }
-
-    await request(options01, async function (error, response) {
-        console.log("tracked :;",(JSON.parse(response.body))['fields']['Custom.Tracked'])
-    })
-}
-export {updateDevops};

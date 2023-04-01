@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken';
 import config from '../config/auth.config';
-import Account from "../models/account.model";
+import User from "../models/user.model";
 
 export const getEverHourUserId = async (req, res, next) => {
     let token = req.headers.authorization;
 
     try {
-        let accountDetails;
+        let userDetails;
         if (!token) {
             return res.status(403).send({ message: "No token provided!" });
         }
@@ -15,18 +15,18 @@ export const getEverHourUserId = async (req, res, next) => {
                 return res.status(401).send({ message: "Unauthorized!" });
             }
 
-            await Account.findOne({ 'user': decoded.id })
-                .then(account => {
-                    if (account) {
-                        accountDetails = {
-                            id: account._id,
-                            xApiKey: account.xApiKey
+            await User.findOne({ '_id': decoded.id })
+                .then(user => {
+                    if (user) {
+                        userDetails = {
+                            id: user._id,
+                            xApiKey: user.xApiKey
 
                         }
                     }
                 }
                 )
-            req.body.xApiKey = accountDetails.xApiKey;
+            req.body.xApiKey = userDetails.xApiKey;
             next();
         });
 
