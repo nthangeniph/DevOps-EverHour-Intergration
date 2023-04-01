@@ -1,6 +1,7 @@
 import Comment from '../models/comment.model';
 import { NextFunction, Request, Response } from 'express';
 import { getEverHourUserId } from '../utils';
+import swaggerDocs from "../swagger/comment.json"
 
 const createComment = async (req: Request, res: Response, next: NextFunction) => {
     const { week, markup, taskdateid } = req.body;
@@ -88,6 +89,11 @@ const deleteCommentById = async (req: Request, res: Response, next: NextFunction
         .catch((error) => res.status(500).json({ error }))
 
 }
+const getSchema = async (req: Request, res: Response, next: NextFunction) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerDocs);
+
+}
 
 
-export { createComment, updateComment, deleteCommentById, getComments }
+export { createComment, updateComment, deleteCommentById, getComments,getSchema }

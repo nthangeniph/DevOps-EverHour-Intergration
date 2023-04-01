@@ -1,4 +1,4 @@
-import { createComment, deleteCommentById, getComments, updateComment } from "../controllers/comment.controller";
+import { createComment, deleteCommentById, getComments, getSchema, updateComment } from "../controllers/comment.controller";
 import { getEverHourUserId } from '../middleware/getEverHourUserId';
 
 
@@ -18,6 +18,7 @@ const commentRoute = function (app) {
     app.delete("/api/comment/deleteCommentById",
         deleteCommentById
     );
+    app.get("/api/comment", getSchema)
 }
 
 export { commentRoute }; 

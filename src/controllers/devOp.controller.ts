@@ -2,6 +2,7 @@ import { devopsHeaders, devopsPatchHeaders } from '../utils';
 import { Request, Response, NextFunction } from 'express';
 import Configuration from '../models/configuration.model';
 import User from '../models/user.model';
+import swaggerDocs from "../swagger/devOps.json"
 
 export interface IUpdateItem {
     id?: number;
@@ -254,5 +255,10 @@ const updateWorkItems = async (req: Request, res: Response, next: NextFunction) 
         return;
     }
 };
+const getSchema = async (req: Request, res: Response, next: NextFunction) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerDocs);
 
-export { getProjectData, updateWorkItems, getAllProjects };
+}
+
+export { getProjectData, updateWorkItems, getAllProjects,getSchema };

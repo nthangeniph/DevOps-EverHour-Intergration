@@ -15,10 +15,8 @@ import { everHourRoute } from './routes/everHour.routes';
 import cors from 'cors';
 import { commentRoute } from './routes/comment.routes';
 
+
 const router = express();
-
-var request = require('request');
-
 
 mongoose
     .connect(config.mongo.url, {
@@ -61,7 +59,13 @@ const StartServer = () => {
         extended: true
     }));
 
-    var whitelist = ['http://localhost:3000', 'http://localhost:8080', 'http://127.0.0.1:8080', 'https://nthangeniph-devops-everhour-intergration.onrender.com', 'https://nthangeniphumudzo-devops-everhour-front.onrender.com']
+    var whitelist = [
+        'http://localhost:3000',
+        'http://localhost:8080',
+        'http://127.0.0.1:8080',
+        'https://nthangeniph-devops-everhour-intergration.onrender.com',
+        'https://nthangeniphumudzo-devops-everhour-front.onrender.com'
+    ]
     var corsOptions = {
         origin: function (origin, callback) {
             if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -97,9 +101,9 @@ const StartServer = () => {
 }
 
 router.listen(config.server.port, () => {
-    debugger;
+
     Logging.info(`Server is running on port ${config.server.port}.`);
-    //getProjectData('zl3rt34z6eymdtzfz5sz7untamobwpg3fmdyl6uw5detdbmcxmaq','Phumudzo')
+
 });
 
 
@@ -136,4 +140,5 @@ function initial() {
         }
     });
 }
+
 

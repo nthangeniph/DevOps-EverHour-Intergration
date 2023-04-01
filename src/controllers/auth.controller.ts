@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import { Request, Response, NextFunction } from 'express';
 import User from '../models/user.model';
 import Role, { IRole, IRoleOut } from '../models/role.model';
+import swaggerDocs from "../swagger/authentication.json"
 
 
 const signup = async (req: Request, res: Response, next: NextFunction) => {
@@ -119,6 +120,12 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
 
 }
 
+const getSchema = async (req: Request, res: Response, next: NextFunction) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerDocs);
+
+}
+
 async function getRoles(roles: String[] = [], res: Response) {
   let results: IRoleOut[] = [];
   if (roles.length) {
@@ -142,4 +149,4 @@ async function getRoles(roles: String[] = [], res: Response) {
   return results;
 
 }
-export { signin, signup, updateUser };
+export { signin, signup, updateUser, getSchema };

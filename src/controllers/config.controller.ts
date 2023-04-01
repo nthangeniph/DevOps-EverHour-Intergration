@@ -1,5 +1,6 @@
 import Configuration from '../models/configuration.model';
 import { NextFunction, Request, Response } from 'express';
+import swaggerDocs from "../swagger/configuration.json"
 
 const createConfig = (req: Request, res: Response, next: NextFunction) => {
     const { userId } = req.body;
@@ -17,7 +18,8 @@ const createConfig = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getConfiguration = (req: Request, res: Response, next: NextFunction) => {
-    var query = { userId: req.params.userId };
+    var query = { userId: req.query.userId };
+
 
     return Configuration.findOne(query)
         .then((config) =>
@@ -72,5 +74,9 @@ const deleteConfigById = async (req: Request, res: Response, next: NextFunction)
         .then(() => res.status(200).send({ message: 'Configuration deleted successfully' }))
         .catch((error) => res.status(500).json({ error }));
 };
+const getSchema = async (req: Request, res: Response, next: NextFunction) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerDocs);
 
-export { createConfig, getConfiguration, updateConfig, deleteConfigById };
+}
+export { createConfig, getConfiguration, updateConfig, deleteConfigById, getSchema };

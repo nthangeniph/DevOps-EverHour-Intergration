@@ -87,27 +87,27 @@
                 "allOf": [{ "$ref": "#/definitions/WeekTasks" }]
             }
         },
-        "AddTaskInput":{
+        "AddTaskInput": {
             "properties": {
                 "week": {
                     "type": "string"
                 },
                 "tasks": {
-                   "type": "array",
+                    "type": "array",
                     "items": {
                         "type": "string"
                     }
                 }
             }
         },
-        "GetProjectTaskInput":{
-             "required": ["taskId"],
-              "properties": {
+        "GetProjectTaskInput": {
+            "required": ["taskId"],
+            "properties": {
                 "projectId": {
                     "type": "string"
-                } 
-               }
+                }
             }
+        }
     },
 
     "paths": {
@@ -133,6 +133,71 @@
                 "responses": {
                     "200": {
                         "description": "All Resolved Tasks",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/timeSheets"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/everHour/getProjectTasks": {
+            "get": {
+                "tags": ["EverHour"],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "query",
+                        "required": " true",
+                        "description": "pull all recents tasks associated with a project",
+                        "type": "string"
+                    }
+                ],
+
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All Resolved Tasks",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/timeSheets"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/everHour/addNewTask": {
+            "post": {
+                "tags": ["EverHour"],
+                "requestBody": {
+                    "description": "Add a new task to the week",
+                    "required": " true",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/AddTaskInput"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "New add Task to the week",
                         "content": {
                             "application/json": {
                                 "schema": {

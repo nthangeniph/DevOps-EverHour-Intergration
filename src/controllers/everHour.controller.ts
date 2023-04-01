@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { everHoursHeaders, getEverHourUserId } from '../utils';
 import { getDaysMonth, getWeek } from './helpers';
+import swaggerDocs from "../swagger/everHour.json"
 
 var request = require('request');
 
@@ -202,6 +203,8 @@ const addNewTask = async (req: Request, res: Response, next: NextFunction) => {
         const { xApiKey, week, tasks } = req.body;
         const date = new Date();
         let year = date.getFullYear().toString().substring(2);
+        console.log("week ::", week);
+
 
         var optionsMe = {
             method: 'POST',
@@ -233,7 +236,8 @@ const addNewTask = async (req: Request, res: Response, next: NextFunction) => {
 const getProjectTasks = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
-        const { xApiKey, projectId } = req.body;
+        const { projectId } = req.query;
+        const { xApiKey } = req.body;
 
         var optionsMe = {
             method: 'GET',
@@ -263,4 +267,9 @@ const getProjectTasks = async (req: Request, res: Response, next: NextFunction) 
         return;
     }
 };
-export { getWeekTasks, updateTasks, addNewTask, getProjectTasks, getAllUserProjects };
+const getSchema = async (req: Request, res: Response, next: NextFunction) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerDocs);
+
+}
+export { getWeekTasks, updateTasks, addNewTask, getProjectTasks, getAllUserProjects, getSchema };

@@ -70,12 +70,12 @@
                 }
             }
         },
-        "/api/configurations/getConfigById/{userId}": {
+        "/api/configurations/getConfigById": {
             "parameters": [
                 {
                     "name": "userId",
-                    "in": "path",
-                    "required": " true",
+                    "in": "query",
+                    "required": " false",
                     "description": "Find an conigurations by userId",
                     "type": "string"
                 }
